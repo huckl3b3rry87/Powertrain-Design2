@@ -2,7 +2,7 @@
 figure(14);clf;
 
 We = W_eng./(GEAR_save*FD);
-Wm = W_mot./(GEAR_save*FD*G);
+Wm = W_mot./(FD*G);
 
 plot(cyc_time,Ww,'color','r','LineWidth',8);
 hold on 

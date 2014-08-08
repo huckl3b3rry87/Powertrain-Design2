@@ -1,5 +1,5 @@
 Te = T_eng.*GEAR_save*FD;
-Tm = T_mot.*GEAR_save*FD*G;
+Tm = T_mot.*FD*G;
 T_total = Te + Tm;
 
 figure(13);clf;

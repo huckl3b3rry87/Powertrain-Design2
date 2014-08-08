@@ -36,6 +36,6 @@ ess_max_pwr_dis = (ess_voc.^2)./(4*ess_r_dis)*0.98; % 110~105kW in 40-70 percent
 ess_max_pwr_chg = (ess_voc.^2)./(4*ess_r_chg)*0.98; % 105~100kW in 40-70 percent SOC window
 
 
-ess_module_mass=.37824*3;  % (kg), mass of single module
+ess_module_mass = 0.37824*3;  % (kg), mass of single module
 
 ess_mass = module_number*ess_module_mass;

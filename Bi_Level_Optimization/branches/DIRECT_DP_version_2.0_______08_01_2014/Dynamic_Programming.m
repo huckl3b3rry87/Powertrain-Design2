@@ -500,7 +500,7 @@ for t = 1:1:time_cyc
         u3_c = u3_temp(id_lookup_u3);
     end
     
-    % Update x2 and define new eng id  - change to new for consitiancy
+    % Update x2 and define new eng id 
     ENG_state_n = ENG_state_c + u3_c;
     
     % Update x3 and define new gear id
@@ -630,7 +630,11 @@ for t = 1:1:time_cyc
     
     % Determine Braking Torque
     if Wm_c ~= 0
-        Tm_actual = Pbat/(Wm_c*eff_m) - Paux/Wm_c;
+        if ENG_state_n == 0;  % maybe consider charging and discharging...
+            Tm_actual = Pbat/(Wm_c*eff_m) - Paux/(Wm_c*eff_m);
+        else
+            Tm_actual = Pbat/(Wm_c*eff_m);
+        end
     else
         Tm_actual = 0;
     end
@@ -750,8 +754,8 @@ if RUN_TYPE == 0
     Engine_Plot;
     Motor_Plot;
 %     Cost_Plot;
-    Torque_Check;
-    Speed_Check;
+%     Torque_Check;
+%     Speed_Check;
     Battery_Plot;
 %     Brake_Plot;
     cd ..

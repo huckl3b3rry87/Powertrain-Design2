@@ -12,10 +12,10 @@ set(findall(gcf,'type','text'),'FontSize',25,'fontWeight','bold')
 legend('Maximum Battery Discharge Power','Maximum Battery Charge Power','Opperating Points'),grid 
 
 
-figure(34); clf
-plot(cyc_time,i)
-legend('current')
-
-figure(35); clf
-plot(cyc_time,C_rate)
-legend('C Rate')
+% figure(34); clf
+% plot(cyc_time,i)
+% legend('current')
+% 
+% figure(35); clf
+% plot(cyc_time,C_rate)
+% legend('C Rate')
