@@ -41,7 +41,7 @@ people = 70*4; % 70 kg per passenger
 
     %Base Power = For cruising of 55 mph on a road with a %5 grade
         grade = 0.05; 
-        V = 100*mph_mps;              
+        V = 40*mph_mps;              
         Pb3 = (m*g*Frr + 0.5*rho*Cd*Af*V^2 + m*g*grade)*V/(1000*nt)
  
 % To determine the maximum power requirement for acceleration from 0 - 60 mph in 12 seconds
@@ -64,7 +64,7 @@ people = 70*4; % 70 kg per passenger
 %  Vehicle_Parameters;
 cd ..
 
-V = 0:1:120*mph_mps;  \
+V = 0:1:120*mph_mps;  
 Wheel_Spd = V/rwh;   % rad/sec
 
 %Base Power 1
@@ -167,6 +167,7 @@ load CYC_HWFET; cyc_name = 'HWFET';
 Manipulate_Drive_Cycle;
 cd ..
 %%
+
 Pd_no_regen(Pd > 0) = Pd(Pd > 0);
 Pd_ave = sum(Pd_no_regen)/length(Pd_no_regen)*ones(size(Pd));
 
@@ -188,11 +189,11 @@ dm = 1.04;  % Check this!
 Vf = 60*mph_mps;
 Vb = 20*mph_mps;
 ta = 12;
-Pm = dm*m/(2*nem*ta)*(Vf^2 + Vb^2);
+Pm = dm*m/(2*nem*ta)*(Vf^2 + Vb^2)
 figure(4);
 plot(V/mph_mps,Max_Eng_Power/1000,'k')
-dv_dt = Motor_Tractive_Effort*FD*G*nem/(rwh*dm*m);
-t_ = V./dv_dt
-V_ = dv_dt.*t_
-figure(5);clf
-plot(t_,V_/mph_mps)
+% dv_dt = Motor_Tractive_Effort*FD*G*nem/(rwh*dm*m);
+% t_ = V./dv_dt
+% V_ = dv_dt.*t_
+% figure(5);clf
+% plot(t_,V_/mph_mps)

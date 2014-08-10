@@ -64,7 +64,7 @@ people = 70*4; % 70 kg per passenger
 %  Vehicle_Parameters;
 cd ..
 
-V = 0:1:120*mph_mps;  \
+V = 0:1:120*mph_mps;  
 Wheel_Spd = V/rwh;   % rad/sec
 
 %Base Power 1

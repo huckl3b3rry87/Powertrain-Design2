@@ -13,7 +13,7 @@ for t = 1:1:time_cyc
 
     %% Calculate Tw, Ww and Pd from the Drive Cycle
     if v(t) ~= 0
-        Tw(t) = rwh*(m*g*grade + Frr*m*g*grade + 0.5*rho*Cd*(v(t))^2*Af + m*a(t));  % Torque needed at the wheels
+        Tw(t) = rwh*(m*g*sin(grade) + Frr*m*g*cos(grade) + 0.5*rho*Cd*(v(t))^2*Af + m*a(t));  % Torque needed at the wheels
     else
         Tw(t) = 0;
     end
