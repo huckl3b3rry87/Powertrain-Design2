@@ -21,9 +21,19 @@ for t = 1:1:time_cyc
     Ww(t) = v(t)/rwh;       % Wheel Speed Needed - [rad/sec]
     Pd(t) = Ww(t)*Tw(t);      % Power Demand       - [W]
 end
-
-% 
-% % %%
+% plot(cyc_time,a)
+% xlabel('time (s)')
+% ylabel('acceleration (m/s^2)')
+% figure(222);
+% [AX,H1,H2] = plotyy(1:time_cyc,v/mph_mps,1:time_cyc,a);
+% set(get(AX(1),'Ylabel'),'String','Vehicle Speed (MPH)','fontWeight','bold','fontSize',12)
+% set(get(AX(2),'Ylabel'),'String','acceleration (m/s^2)','fontWeight','bold','fontSize',12)
+% set(H1,'LineWidth',2);
+% set(H2,'LineWidth',2);
+% set(AX(2),'fontWeight','bold','fontSize',12)
+% xlabel('time (sec)','fontWeight','bold','fontSize',12);
+% set(gca,'fontSize',12,'fontWeight','bold'),grid
+% % % %%
 % clf;
 % figure(122);
 % [AX,H1,H2] = plotyy(1:time_cyc,Tw,1:time_cyc,Ww);

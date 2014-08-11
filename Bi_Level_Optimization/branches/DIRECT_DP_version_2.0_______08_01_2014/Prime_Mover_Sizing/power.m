@@ -1,6 +1,6 @@
-clear all
-clc
-close all
+% clear all
+% clc
+% close all
 
 % The power and energy requirement from the powertrain is determined from a given set of vehicle cruising and acceleration specifications
 
@@ -32,28 +32,28 @@ people = 70*4; % 70 kg per passenger
     %Base Power = For cruising of 60 mph on a flat road
        alpha = 0; 
         V = 60*mph_mps;              
-        Pb1 = (m*g*Frr*cos(alpha) + 0.5*rho*Cd*Af*V^2 + m*g*sin(alpha)*V/(1000*nt)
+        Pb1 = (m*g*Frr*cos(alpha) + 0.5*rho*Cd*Af*V^2 + m*g*sin(alpha))*V/(1000*nt)
 
     %Base Power = For cruising of 80 mph on a flat road
         alpha = 0; 
         V = 100*mph_mps;              
-        Pb2 = (m*g*Frr*cos(alpha) + 0.5*rho*Cd*Af*V^2 + m*g*sin(alpha)*V/(1000*nt)
+        Pb2 = (m*g*Frr*cos(alpha) + 0.5*rho*Cd*Af*V^2 + m*g*sin(alpha))*V/(1000*nt)
 
     %Base Power = For cruising of 55 mph on a road with a %5 grade
         alpha = 0.05; 
         V = 40*mph_mps;              
-        Pb3 = (m*g*Frr*cos(alpha) + 0.5*rho*Cd*Af*V^2 + m*g*sin(alpha)*V/(1000*nt)
+        Pb3 = (m*g*Frr*cos(alpha) + 0.5*rho*Cd*Af*V^2 + m*g*sin(alpha))*V/(1000*nt)
  
 % To determine the maximum power requirement for acceleration from 0 - 60 mph in 12 seconds
     
      %Determine Acceleration Requirement
          Vf = 60*mph_mps;               % m/s - Final Velocity
          Vi = 0*1.60934/3.6;                % m/s - Initial Velocity
-         dt = 13;                           % s - time to accelearate
+         dt = 12;                           % s - time to accelearate
          dv_dt = (Vf - Vi)/dt;              % m/s^2 - Required Acceleration
 
      %The maximum total electric power requirement 
-         Ptot = (m*g*Frr + 0.5*rho*Cd*Af*Vf^2 + m*delta*dv_dt)*Vf/(1000*nt*nem)
+         Ptot = (m*g*Frr*cos(alpha) + 0.5*rho*Cd*Af*Vf^2 + m*delta*dv_dt)*Vf/(1000*nt*nem)
  
          
  % To Plot the Tractive Effort Verse the Vehicle Speed

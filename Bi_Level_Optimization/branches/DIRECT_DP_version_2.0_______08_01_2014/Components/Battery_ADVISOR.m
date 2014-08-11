@@ -1,7 +1,7 @@
 
 % ADVISOR data file:  ESS_LI7_temp.m
 % 
-% module_number = 63; % Could round later
+%module_number = 63; % Could round later
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Temperature range over which data is defined
@@ -29,12 +29,17 @@ ess_r_chg = ess_r_chg(3,:);
 ess_voc = ess_voc(3,:);
 ess_cap_ah = ess_cap_ah(3);
 
+% For Battery sizing
+Rint_size = [ess_r_dis(4)/module_number];
+Voc_size =  [ess_voc(4)/module_number];
+
 ess_soc=[0 10 20 40 60 80 100]/100; 
 
 % BORROWED the resistance down scaling helps to match the 100kW net power spec of 2010 Prius (mentioned in Namwook Kim's journal)
 ess_max_pwr_dis = (ess_voc.^2)./(4*ess_r_dis)*0.98; % 110~105kW in 40-70 percent SOC window
 ess_max_pwr_chg = (ess_voc.^2)./(4*ess_r_chg)*0.98; % 105~100kW in 40-70 percent SOC window
 
+% plot(ess_soc,ess_max_pwr_dis/1000)
 
 ess_module_mass = 0.37824*3;  % (kg), mass of single module
 

@@ -21,21 +21,21 @@ if RUN_TYPE == 0
     TEST_Run
 end
 %                              ~~ Engine ~~
-Engine_2rz_0410; 
+% Engine_2rz_0410; 
 % Engine_102_kW;
-% Engine_41_kW;
+Engine_41_kW;
 
 %                              ~~ Motor ~~
 % Motor_int;
 Motor_75_kW;
 
 %                             ~~ Battery ~~
-% Battery_int;
+% Battery_int;  % No variation with the number of modules in this battery!!
 Battery_ADVISOR;
 
 %                              ~~ Vehicle ~~
 
-Vehicle_Parameters;
+Vehicle_Parameters_4_HI_AV;
 
 cd ..  
 
@@ -43,7 +43,7 @@ cd('Drive_Cycle')
 
 % load CYC_HWFET; cyc_name = 'HWFET';
 %load CYC_UDDS; cyc_name = 'UDDS';
-load CYC_US06; cyc_name = 'US06';
+% load CYC_US06; cyc_name = 'US06';
 %load SHORT_CYC_HWFET; cyc_name = 'SHORT_CYC_HWFET';
 %load RAMP; cyc_name = 'RAMP';
 %load RAMP_slow; cyc_name = 'RAMP_slow';
@@ -51,6 +51,9 @@ load CYC_US06; cyc_name = 'US06';
 %load CONST_65; cyc_name = 'CONST_65';
 %load CONST_45; cyc_name = 'CONST_45';
 %load CYC_COMMUTER; cyc_name = 'COMMUTER';
+
+% AV Cycles
+load CYC_US06_AV; cyc_name = 'US06_AV';
 
 Manipulate_Drive_Cycle;
 cd ..
