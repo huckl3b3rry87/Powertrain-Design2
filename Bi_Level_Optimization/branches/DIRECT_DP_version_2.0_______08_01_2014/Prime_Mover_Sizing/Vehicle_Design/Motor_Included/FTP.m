@@ -11,7 +11,8 @@ Engine_41_kW;
 % Engine_102_kW;
 Battery_ADVISOR;
 Motor_75_kW;
-Vehicle_Parameters_4_HI_AV;
+%Vehicle_Parameters_4_HI_AV;
+Vehicle_Parameters_4_HI;
 cd ..
 
 % Desired Grade and Top Speed Performance - (Engine) - For Low Grades
