@@ -89,8 +89,6 @@ mc_max_crrnt=480; % (A), maximum current allowed by the controller and motor
 mc_min_volts=120; % (V), minimum voltage allowed by the controller and motor
 
 mc_max_pwr_kW = max(mc_max_trq.*mc_map_spd)/1000;
-
-mc_max_pwr_initial_kW = 75;
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % DEFAULT SCALING
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

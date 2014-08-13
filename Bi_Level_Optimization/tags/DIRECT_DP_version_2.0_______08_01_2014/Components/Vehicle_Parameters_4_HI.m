@@ -2,7 +2,7 @@
 
 % Define Load
 lb2kg = 0.453592;
-Sw = 300*lb2kg;
+Sw = 0;
 luggage = 30*4; % 30 kg per passenger
 people = 70*4; % 70 kg per passenger
 Load = Sw + luggage + people;
@@ -37,4 +37,4 @@ MIN_SOC = 0.4;
 MAX_SOC = 0.8;
 
 
-Paux = 2500 + 700; 
+Paux = 500; 

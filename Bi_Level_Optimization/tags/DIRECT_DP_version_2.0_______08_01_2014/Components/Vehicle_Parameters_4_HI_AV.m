@@ -37,4 +37,4 @@ MIN_SOC = 0.4;
 MAX_SOC = 0.8;
 
 
-Paux = 2500 + 700; 
+Paux = 2000; 

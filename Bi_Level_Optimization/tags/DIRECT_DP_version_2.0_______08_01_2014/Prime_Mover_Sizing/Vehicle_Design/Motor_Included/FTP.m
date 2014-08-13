@@ -11,8 +11,8 @@ Engine_41_kW;
 % Engine_102_kW;
 Battery_ADVISOR;
 Motor_75_kW;
-Vehicle_Parameters_4_HI_AV;
-% Vehicle_Parameters_4_HI;
+%Vehicle_Parameters_4_HI_AV;
+Vehicle_Parameters_4_HI;
 cd ..
 
 % Desired Grade and Top Speed Performance - (Engine) - For Low Grades
@@ -36,7 +36,6 @@ fc_trq_scale = Pbase_kW/fc_max_pwr;  % For now neglect the effect that changing 
 V_desired = 60;  % MPH
 t_desired =  12; % Sec
 
-% 72.1 to 74.9 in one second
 % Get things started
 Final_Velocity = 0;
 n = 1;
@@ -73,7 +72,7 @@ while(abs(Final_Velocity - V_desired) > 0.5)
             v=x(:,1);  % Speed
             s=x(:,2);  % Distance
             
-            We_c = ni*v/rwh; % rad/sec          % Does not depend on gear if you are only doing the motor!!
+            We_c = ni*v/rwh; % rad/sec
             We_c(We_c < W_eng_min) = W_eng_min;
             We_c(We_c > W_eng_max) = W_eng_max;
             T_eng_max = interp1(eng_consum_spd,eng_max_trq,We_c);
@@ -83,8 +82,8 @@ while(abs(Final_Velocity - V_desired) > 0.5)
             Wm_c(Wm_max < Wm_c) = Wm_max;
             Tm_max = interp1(m_map_spd,m_max_trq,Wm_c);
             
-            Fti = T_eng_max*ni/rwh + Tm_max*FD*G/rwh;
-%             Fti = Tm_max*FD*G/rwh;                         % Motor Only
+            %Fti = T_eng_max*ni/rwh + Tm_max*FD*G/rwh;
+            Fti = Tm_max*FD*G/rwh;                         % Motor Only
             Frl = m*g*sin(grade) + Frr*m*g*cos(grade) + 0.5*rho*Cd*v.^2*Af;
             acc=(Fti-Frl)/m;% Differential equation for speed
             if mean(acc) < 0.05
@@ -206,18 +205,6 @@ while(abs(Final_Velocity - V_desired) > 0.5)
     Final_Velocity = V_sim(I);
     n = n + 1;
 end
-
-% Add in ancilary power for both the engine and the motor
-Paux_kW = Paux/1000;
-mc_trq_scale = mc_trq_scale + Paux_kW/mc_max_pwr_initial_kW;
-fc_trq_scale = fc_trq_scale + Paux_kW/fc_max_pwr_initial_kW;
-
-% Recalcualte mc_max_pwr_kW & fc_mac_pwr_kW
-cd('Components');
-Engine_41_kW;
-% Engine_102_kW;
-Motor_75_kW;
-cd ..
 
 % At the lowest SOC for conservancy
 Module_Number = 4*mc_max_pwr_kW*1000*Rint_size/(Voc_size^2)

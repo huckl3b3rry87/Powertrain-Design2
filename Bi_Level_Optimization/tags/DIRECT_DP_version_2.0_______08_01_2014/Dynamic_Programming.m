@@ -18,7 +18,7 @@ end
 
 cd('Components');
 if RUN_TYPE == 0
-    %TEST_Run_4_HI;
+%     TEST_Run_4_HI;
     TEST_Run_4_HI_AV;
 end
 %                              ~~ Engine ~~
@@ -42,9 +42,9 @@ cd ..
 
 cd('Drive_Cycle')
 
-%load CYC_HWFET; cyc_name = 'HWFET';
+% load CYC_HWFET; cyc_name = 'HWFET';
 %load CYC_UDDS; cyc_name = 'UDDS';
-load CYC_US06; cyc_name = 'US06';
+% load CYC_US06; cyc_name = 'US06';
 %load SHORT_CYC_HWFET; cyc_name = 'SHORT_CYC_HWFET';
 %load RAMP; cyc_name = 'RAMP';
 %load RAMP_slow; cyc_name = 'RAMP_slow';
@@ -54,7 +54,7 @@ load CYC_US06; cyc_name = 'US06';
 %load CYC_COMMUTER; cyc_name = 'COMMUTER';
 
 % AV Cycles
-% load CYC_US06_AV; cyc_name = 'US06_AV';
+load CYC_US06_AV; cyc_name = 'US06_AV';
 
 Manipulate_Drive_Cycle;
 cd ..
@@ -163,8 +163,7 @@ for t = 1:time_cyc
                     end
                     
                     % Check Motor
-                    Tm_max_current = interp1(m_map_spd,m_max_trq,Wm_c)*ones(size(u1_grid));
-                    Tm_max(x2,x3,:,u2,u3) =  Tm_max_current;    % [x2]x[x3]x[u1]x[u2]x[u3]   - #Check to see if the motor map is symmetric
+                    Tm_max(x2,x3,:,u2,u3) = interp1(m_map_spd,m_max_trq,Wm_c)*ones(size(u1_grid));    % [x2]x[x3]x[u1]x[u2]x[u3]   - #Check to see if the motor map is symmetric
                     Tm_save(x2,x3,:,u2,u3) = Tm_c;                                                      % [x2]x[x3]x[u1]x[u2]x[u3]
                     Wm_save(x2,x3,:,u2,u3) = Wm_c*ones(size(u1_grid));                                  % [u1]x[1]  -  Check For Each Gear
                     
@@ -200,13 +199,6 @@ for t = 1:time_cyc
                     inst_fuel(x2,x3,:,u2,u3) = fuel + Shift_Penalty*ones(size(fuel)) + Eng_Penalty*ones(size(fuel));    
                      
                     % Update x1
-                    
-                    % Saturate the motor for the efficiency lookup table
-                    Tm_c(Tm_c > Tm_max_current) = Tm_max_current(Tm_c > Tm_max_current);
-                    Tm_c(Tm_c < -Tm_max_current) = -Tm_max_current(Tm_c < -Tm_max_current);    
-                    Wm_c(Wm_c > Wm_max) = Wm_max;
-                    Wm_c(Wm_c < Wm_min) = Wm_min;
-                    
                     eff_m = interp2(m_map_trq, m_map_spd, m_eff_map, Tm_c, abs(Wm_c))';      
                     eff_m(isnan(eff_m)) = 0.2;
                     
@@ -253,8 +245,7 @@ for t = 1:time_cyc
         end           % End of u2 ( Gear Control )
     end               % End of x3 (Gear State) loops
     % Check Motor
-%     infeasible_Tm = (Tm_save > Tm_max) | (Tm_save < -Tm_max);             % [x2]x[x3]x[u1]x[u2]x[u3] 
-    infeasible_Tm = (Tm_save > Tm_max);            % Can Brake to make the rest up
+    infeasible_Tm = (Tm_save > Tm_max) | (Tm_save < -Tm_max);             % [x2]x[x3]x[u1]x[u2]x[u3]
     infeasible_Tm = repmat(infeasible_Tm,[1,1,1,1,1,x1_length]);
     infeasible_Tm = permute(infeasible_Tm,[6 1 2 3 4 5]);
     
@@ -597,7 +588,7 @@ for t = 1:1:time_cyc
         Fail_Tm = 1;
     elseif Tm_c < -Tm_max
         Tm_eff = -Tm_max;
-        Fail_Tm = 0;    % Can use the brake
+        Fail_Tm = 1;
     else
         Tm_eff = Tm_c;
         Fail_Tm = 0;
@@ -624,11 +615,10 @@ for t = 1:1:time_cyc
         Pbatt_max = interp1(ess_soc, ess_max_pwr_dis,SOC_c);
         if Pbat > Pbatt_max
             FAIL_Pbatt = 1;
-            Pbat = Pbatt_max;  % Saturate it 
         else
             FAIL_Pbatt = 0;
         end
-%         Pbat(Pbat > Pbatt_max) = Pbatt_max;
+        Pbat(Pbat > Pbatt_max) = Pbatt_max;
         rint_c = interp1(ess_soc,ess_r_dis,SOC_c);
     else
         Pbatt_min = -interp1(ess_soc, ess_max_pwr_chg,SOC_c);

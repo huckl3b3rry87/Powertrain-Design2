@@ -25,8 +25,8 @@ end
 Tm_max = interp1(m_map_spd,m_max_trq,Wm_c);
 
 % Total
-Fti = T_eng_max*ni/rwh + Tm_max*FD*G/rwh;
-% Fti = Tm_max*FD*G/rwh;                         % Motor Only
+%Fti = T_eng_max*ni/rwh + Tm_max*FD*G/rwh;
+Fti = Tm_max*FD*G/rwh;                         % Motor Only
 
 Frl = m*g*sin(grade) + Frr*m*g*cos(grade) + 0.5*rho*Cd*v^2*Af;
 

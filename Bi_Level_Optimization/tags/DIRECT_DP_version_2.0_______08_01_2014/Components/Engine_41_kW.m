@@ -146,7 +146,6 @@ fc_acc_mass=0.8*fc_max_pwr;             % kg    engine accy's, electrics, cntrl'
 fc_fuel_mass=0.6*fc_max_pwr;            % kg    mass of fuel and fuel tank (from OTA report)
 fc_mass=fc_base_mass+fc_acc_mass+fc_fuel_mass; % kg  total engine/fuel system mass
 
-fc_max_pwr_initial_kW = 41;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 % Define all Variables for DP

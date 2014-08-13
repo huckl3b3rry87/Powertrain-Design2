@@ -23,7 +23,7 @@ grade = 0; % Road Grade
 % FD = 3.4; % Final Drive Ratio
 Af = 2.52;  % [m^2], vehicle frontal area (m^2)
 % G = 3;  
-nt = 1;  % Transmission Efficency
+
 
 % Define Conversion Factors
 mph_mps = 1/2.237;
@@ -37,4 +37,4 @@ MIN_SOC = 0.4;
 MAX_SOC = 0.8;
 
 
-Paux = 2500 + 700; 
+Paux = 2000; 
