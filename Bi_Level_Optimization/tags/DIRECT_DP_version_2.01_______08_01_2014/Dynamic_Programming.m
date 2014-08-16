@@ -44,11 +44,11 @@ cd('Drive_Cycle')
 
 %load CYC_HWFET; cyc_name = 'HWFET';
 %load CYC_UDDS; cyc_name = 'UDDS';
-load CYC_US06; cyc_name = 'US06';
+% load CYC_US06; cyc_name = 'US06';
 %load SHORT_CYC_HWFET; cyc_name = 'SHORT_CYC_HWFET';
 %load RAMP; cyc_name = 'RAMP';
 %load RAMP_slow; cyc_name = 'RAMP_slow';
-%load CYC_LA92; cyc_name = 'LA92';
+load CYC_LA92; cyc_name = 'LA92';
 %load CONST_65; cyc_name = 'CONST_65';
 %load CONST_45; cyc_name = 'CONST_45';
 %load CYC_COMMUTER; cyc_name = 'COMMUTER';
@@ -616,15 +616,17 @@ for t = 1:1:time_cyc
     end
     
     if ENG_state_n == 0;
-        Pbat = Pbat + Paux;   % If Pbat is positive, we are adding to the system and taking away from the battery SOC
+        Pbat_terminal = Pbat + Paux;   % If Pbat is positive, we are adding to the system and taking away from the battery SOC
         % A positive Paux takes away from the SOC
+    else
+        Pbat_terminal = Pbat;
     end
     
-    if Pbat >= 0
+    if Pbat_terminal >= 0
         Pbatt_max = interp1(ess_soc, ess_max_pwr_dis,SOC_c);
-        if Pbat > Pbatt_max
+        if Pbat_terminal > Pbatt_max
             FAIL_Pbatt = 1;
-            Pbat = Pbatt_max;  % Saturate it 
+            Pbat_terminal = Pbatt_max;  % Saturate it 
         else
             FAIL_Pbatt = 0;
         end
@@ -633,21 +635,29 @@ for t = 1:1:time_cyc
     else
         Pbatt_min = -interp1(ess_soc, ess_max_pwr_chg,SOC_c);
         FAIL_Pbatt = 0;      % Brakes will handle the rest of the power
-        Pbat(Pbat < Pbatt_min) = Pbatt_min;
+        Pbat_terminal(Pbat_terminal < Pbatt_min) = Pbatt_min;
         rint_c = interp1(ess_soc,ess_r_chg,SOC_c);
     end
     Voc_c = interp1(ess_soc,ess_voc,SOC_c);
-    SOC_n = SOC_c -(Voc_c-(Voc_c^2-4*Pbat*rint_c)^(1/2))/(2*rint_c*ess_cap_ah*3600)*dt;
-    
-    i(t) = (Voc_c-(Voc_c^2-4*Pbat*rint_c)^(1/2))/(2*rint_c);
+    i(t) = (Voc_c-(Voc_c^2-4*Pbat_terminal*rint_c)^(1/2))/(2*rint_c); % Picked the smaller current (-)
+    SOC_n = SOC_c - i(t)/(ess_cap_ah*3600)*dt;
+%   SOC_n = SOC_c -(Voc_c-(Voc_c^2-4*Pbat_terminal*rint_c)^(1/2))/(2*rint_c*ess_cap_ah*3600)*dt;
     C_rate(t) = i(t)/ess_cap_ah;
     
-    % Determine Braking Torque
+    % Determine Braking Torque - With updated Pbat
     if Wm_c ~= 0
-        if ENG_state_n == 0;  % maybe consider charging and discharging...
-            Tm_actual = Pbat/(Wm_c*eff_m) - Paux/(Wm_c*eff_m);
+        if ENG_state_n == 0;  % Don't suppply the auxilary power though the motor
+            if Tm_c <= 0 
+                Tm_actual =  (Pbat_terminal - Paux)/(Wm_c*eff_m); 
+            else
+                Tm_actual = (Pbat_terminal - Paux)/(Wm_c)*eff_m;
+            end
         else
-            Tm_actual = Pbat/(Wm_c*eff_m);
+            if Tm_c <= 0
+                Tm_actual =  (Pbat_terminal)/(Wm_c*eff_m);
+            else
+                Tm_actual = (Pbat_terminal)/(Wm_c)*eff_m;
+            end
         end
     else
         Tm_actual = 0;
@@ -698,7 +708,8 @@ for t = 1:1:time_cyc
     T_mot(t) = Tm_c;
     inst_fuel(t) = fuel;
     U3_save(t) = u3_c;
-    Pbatt_sim(t) = Pbat;
+    Pbatt_sim(t) = Pbat_terminal;
+    eff_m_sim(t) = eff_m;
     
     T_brake_sim(t) = T_brake;
     Tm_actual_sim(t) = Tm_actual;

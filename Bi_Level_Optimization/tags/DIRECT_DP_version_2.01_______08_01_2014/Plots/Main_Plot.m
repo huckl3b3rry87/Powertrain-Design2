@@ -20,7 +20,7 @@ H = legend('Drive Profile','SOC'); set(H,'fontsize', h)
 set(gcf, 'units', 'inch', 'pos', [0.13 0.778029445073613 0.775 0.146970554926388]);
 
 subplot(5,1,2);
-[AX,L1,L2] = plotyy(cyc_time, inst_fuel, cyc_time,ENG_state);
+[AX,L1,L2] = plotyy(cyc_time, inst_fuel,cyc_time,ENG_state);
 set(L1,'marker','x', 'markersize', n, 'markerf','b','linewidth',q);
 set(L2,'marker','x', 'markersize', n, 'markerf','g','linewidth',q);
 set(AX, 'fontsize', y,'fontweight','bold','XTickLabel',[]);
@@ -46,9 +46,9 @@ TOP = [max(W_eng*rads2rpm), max(W_mot*rads2rpm)];
 ylim([0 1.1*max(TOP)])
 
 subplot(5,1,4);
-GRAPH =  plot(cyc_time,T_eng,cyc_time,T_mot); grid on;
+GRAPH =  plot(cyc_time,T_brake_sim,'m',cyc_time,Tm_actual_sim,'g',cyc_time,T_eng,'b'); grid on;
 set(GRAPH,'marker','x', 'markersize', n, 'markerf', 'b','linewidth',q);
-H=legend('Engine Torque','Motor Torque');set(H,'fontsize', h)
+H=legend('Brake Torque','Motor Torque','Engine Torque');set(H,'fontsize', h)
 ylabel({'Torque' ,'(Nm)'},'fontWeight','bold','fontSize',y)
 set(gca,'fontSize',y,'fontWeight','bold');   
 set(gca, 'pos',[0.129559619306594 0.255522536806342 0.775 0.1495]);
