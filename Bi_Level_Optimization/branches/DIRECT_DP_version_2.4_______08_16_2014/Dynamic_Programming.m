@@ -3,7 +3,7 @@
 %----------------------------DEFINE THE RUN TYPE--------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
-RUN_TYPE = 0;  % RUN_TYPE = 1 - for DIRECT     &    RUN_TYPE = 0 - for DP only
+RUN_TYPE = 1;  % RUN_TYPE = 1 - for DIRECT     &    RUN_TYPE = 0 - for DP only
 
 if RUN_TYPE == 0
     clear all
@@ -22,9 +22,9 @@ if RUN_TYPE == 0
     TEST_Run_4_HI_AV;
 end
 %                              ~~ Engine ~~
-% Engine_2rz_0410; 
+Engine_2rz_0410;   % Set all optimal engine speeds
 % Engine_102_kW;
-Engine_41_kW;
+% Engine_41_kW;
 
 %                              ~~ Motor ~~
 % Motor_int;
@@ -38,12 +38,13 @@ Battery_ADVISOR;
 
 Vehicle_Parameters_4_HI_AV;
 % Vehicle_Parameters_4_HI;
-
+module_number = 67;
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-----------Manipulate Data Based of Scaling Factors----------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-Manipulate_Data;
+Manipulate_Data;   % Currently wrong.  but if you clear it out each time it should not really matter,
+% YOu do NOT do this with DIRECT!!!!
 
 cd ..  
 
@@ -51,7 +52,7 @@ cd('Drive_Cycle')
 
 %load CYC_HWFET; cyc_name = 'HWFET';
 %load CYC_UDDS; cyc_name = 'UDDS';
-load CYC_US06; cyc_name = 'US06';
+% load CYC_US06; cyc_name = 'US06';
 %load SHORT_CYC_HWFET; cyc_name = 'SHORT_CYC_HWFET';
 %load RAMP; cyc_name = 'RAMP';
 %load RAMP_slow; cyc_name = 'RAMP_slow';
@@ -61,7 +62,7 @@ load CYC_US06; cyc_name = 'US06';
 %load CYC_COMMUTER; cyc_name = 'COMMUTER';
 
 % AV Cycles
-% load CYC_US06_AV; cyc_name = 'US06_AV';
+load CYC_US06_AV; cyc_name = 'US06_AV';
 
 Manipulate_Drive_Cycle;
 cd ..
@@ -128,7 +129,7 @@ for t = 1:time_cyc
             end
             
             if u2 == 1 || u2 == 3  % Shift penalty
-                Shift_Penalty = 0.25;
+                Shift_Penalty = 0.2;
             else
                 Shift_Penalty = 0;
             end
@@ -143,7 +144,7 @@ for t = 1:time_cyc
                 for u3 = 1:u3_length         % Engine Control
                     
                     if  ENG_state_c == 0 && u3 == 2   % Engine will be turned on - Done later in the code..this is the same thing though.
-                        Eng_Penalty = fc_trq_scale*20;
+                        Eng_Penalty = fc_trq_scale*25;
                     else
                         Eng_Penalty = 0;
                     end

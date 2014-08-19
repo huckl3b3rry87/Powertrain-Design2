@@ -26,7 +26,7 @@
 eng_consum_spd =[128.8 190.7 249 310.5 338.7 366.9 433.9 471.8 510.5];
 
 % (N*m), torque range of the engine
-eng_consum_trq =  fc_trq_scale*[27.1 40.6 54.2 67.7 81.3 94.8 108.4 122 135.5 149.1 162.6 176.2 ...
+eng_consum_trq =  [27.1 40.6 54.2 67.7 81.3 94.8 108.4 122 135.5 149.1 162.6 176.2 ...
       189.7 203.3 216.9];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,7 +106,7 @@ fc_pm_map= fc_pm_map_gpkWh.*fc_map_kW/3600;
 % LIMITS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % (N*m), max torque curve of the engine indexed by fc_map_spd
-eng_max_trq= fc_trq_scale*[67.8 122.0 187.1 214.2 214.2 214.2 216.9 199.3 199.3];
+eng_max_trq= [67.8 122.0 187.1 214.2 214.2 214.2 216.9 199.3 199.3];
 eng_map_spd = eng_consum_spd;
 [opt_vals, spd] = min(eng_bsfc,[],1);
 [opt_val, optimal_trq_index] = min(opt_vals);

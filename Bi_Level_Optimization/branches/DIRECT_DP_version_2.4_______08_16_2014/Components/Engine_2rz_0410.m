@@ -69,13 +69,14 @@ W_eng_min = min(eng_consum_spd);
 W_eng_max = max(eng_consum_spd); 
 Te_min =  repmat(min(eng_control_trq),[1 length(eng_control_trq)])';
 
+fc_max_pwr = max(eng_map_spd.*eng_max_trq)/1000; % kW
 eng_map_spd = eng_consum_spd;
 [opt_vals, spd] = min(eng_bsfc,[],1);
 [opt_val, optimal_trq_index] = min(opt_vals);
 optimal_spd_index = spd(optimal_trq_index);
 optimal_eng_trq = eng_consum_trq(optimal_trq_index);  % DP should tell us
 % this
-optimal_eng_spd = eng_consum_spd(optimal_spd_index);
+optimal_eng_spd = 2000*rpm2rads;
 % Assume
 fc_mass =  131.2225;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%

@@ -3,14 +3,14 @@ close all
 clc
 tic 
 
-TEST_Run_4_HI;
+% TEST_Run_4_HI;
 TEST_Run_4_HI_AV;
 %%%%%%%%%%% RUN OPTIMIZATION %%%%%%%%%%%%%%%%%%%%%%
 
 % Identify the Design Variables and their ranges    
-dv_names={ 'FD', 'G','fc_trq_scale','mc_trq_scale','module_number'};
-x_L=[    0.5*FD, 0.5*G, 0.5*fc_trq_scale, 0.5*mc_trq_scale, 0.5*module_number]';
-x_U=[    1.5*FD, 1.5*G, 1.5*fc_trq_scale, 1.5*mc_trq_scale, 1.5*module_number]';
+dv_names={ 'FD', 'G','fc_trq_scale','mc_trq_scale'};
+x_L=[    0.5*FD, 0.5*G, 0.5*fc_trq_scale, 0.5*mc_trq_scale]';
+x_U=[    1.5*FD, 1.5*G, 1.5*fc_trq_scale, 1.5*mc_trq_scale]';
    
 con_names={'FAIL_DP'}; % They Also Did not Do Grade and Acceleration Tests!
 c_L=[          0;     ];
@@ -18,8 +18,8 @@ c_U=[          1;     ];
 
 % Define the Problem
 PriLev = 2;                      % 1 is no graph 2 shows a graph
-MaxEval = 5;
-MaxIter = 4;
+MaxEval = 40;
+MaxIter = 39;
 GLOBAL.epsilon = 1e-4;
 
 % Define the Objective function Name for the GRAPH

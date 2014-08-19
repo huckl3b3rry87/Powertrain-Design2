@@ -1,4 +1,4 @@
-function [ V_0, V_f,  Acc_Final] = Accel_Req( S, dt_2 )
+function [ V_0, V_f,  Acc_Final] = Accel_Req( S, dt_2, graph )
 
 dt = 1;
 mph_mps = 1/2.237;
@@ -45,9 +45,12 @@ for i = 1:S-1
 end
 
 a_save(n,:) = a_req;
-figure(1);
-plot(V_test(2:end)/mph_mps,a_req,'color',C(n,:),'linewidth',5)
-hold on
+if graph == 1
+    figure(1);
+    plot(V_test(2:end)/mph_mps,a_req,'color',C(n,:),'linewidth',5)
+    hold on
+end
+
 end
 r =1;
 max_a = max(a_save,[],1)*1.05;
@@ -58,7 +61,7 @@ for z = 1:length(max_a)
     end
 end
 index = zeros(size(max_a));
-for i = (S-1):-1:stop  % Starts decreasing at 3 
+for i = (S-1):-1:stop  % Starts decreasing at 3
     if any(max_a(i) < max_a(i+1:S-1))  % Find the next maximum headed backwards and interpolate - except if there is no next maximum - like at the start
         index(i) = 1;
     end
@@ -72,13 +75,16 @@ for g = 1:length(i)
 end
 
 Acc_Final = interp1(v_plot,a_plot,V_test(2:end));
-plot(V_test(2:end)/mph_mps,Acc_Final,'k','linewidth',5)
-legend({cyc_name1,cyc_name2,cyc_name3,cyc_name4,cyc_name5},'Required Acceleration')
-xlabel('Velocity (MPH)')
-ylabel('Acceleration (m/s^2)')
-set(gca,'fontSize',12,'fontWeight','bold')
-set(findall(gcf,'type','text'),'FontSize',15,'fontWeight','bold'),grid
-hold off
+
+if graph == 1
+    plot(V_test(2:end)/mph_mps,Acc_Final,'k','linewidth',5)
+    legend({cyc_name1,cyc_name2,cyc_name3,cyc_name4,cyc_name5},'Required Acceleration')
+    xlabel('Velocity (MPH)')
+    ylabel('Acceleration (m/s^2)')
+    set(gca,'fontSize',12,'fontWeight','bold')
+    set(findall(gcf,'type','text'),'FontSize',15,'fontWeight','bold'),grid
+    hold off  
+end
 
 V_Initial =  V_test(2:end);
 V_Final = (V_Initial + Acc_Final*dt_2);

@@ -84,18 +84,9 @@ while(abs(Final_Velocity - V_desired) > delta)
                 break;
             end
             
-%             if (max(v) >  1.05*V_desired/mph_mps) % Simulate a hair longer than V_f
-%                 break;              
-%             end
-            
             if (we < wem)  
                 tf = tf + 0.5;
             end
-%             
-%             if tf > 1.1*dt_2
-%                 break;
-%             end
-            
         end
         
         if check > 1  % Otherwise, just shift

@@ -58,7 +58,7 @@ people = 70*4; % 70 kg per passenger
          
  % To Plot the Tractive Effort Verse the Vehicle Speed
  cd('Components');
- TEST_Run;
+ TEST_Run_4_HI_AV;
  Engine_41_kW;
  Motor_75_kW;
 %  Vehicle_Parameters;

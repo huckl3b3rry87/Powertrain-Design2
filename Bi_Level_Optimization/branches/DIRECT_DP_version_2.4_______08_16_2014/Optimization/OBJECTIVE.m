@@ -9,7 +9,7 @@ FD = x(1);
 G = x(2);
 fc_trq_scale = x(3);
 mc_trq_scale = x(4);
-module_number = round(x(5));
+% module_number = round(x(5));
 
 % Update Mass of Vehicle for batteries and motor!!
 
