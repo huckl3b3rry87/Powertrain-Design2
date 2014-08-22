@@ -1,7 +1,4 @@
-function [ PASS, Sim_Variables ] = Acceleration_Test(V_0,V_f, dt_2, param, vinf, dvar)
-
-% % Manipulate Data Based off of New Design Variables
-% Manipulate_Data_Structure;
+function [ PASS, Sim_Variables ] = Acceleration_Test(V_0,V_f, Acc_Final, dt_2, param, vinf, dvar, TYPE)
 
 % Initialize Stuff
 V_sim = [];
@@ -18,18 +15,30 @@ time_sim = [];
 % Gearbox and final drive ratios:
 ng= [4.484 2.872 1.842 1.414 1.000 0.742];
 
-x0=[V_0*param.mph_mps 0]; t0=0; tf = 0.5; % Initial conditions
+x0=[V_0*param.mph_mps 0]; t0=0; tf = 0.25; % Initial conditions
 wem = vinf.eng_consum_spd(end-2); % Engine speed at which gear is shifted
-we = 0; % A value set for the ‘while’ statement below
+
+
+% global Fti Frl we_sim wm T_eng_max Tm_max acc 
 
 for i=1: length(ng) % Loop for gears
+    
+    if i > 1
+        if max(v)/param.mph_mps > V_f*1.3
+            break;
+        end
+    end
+    
     ni=ng(i)*dvar.FD; % Overall gear ratio at each gear
     check = 0;
     we = 0;
     while we < wem % Repeat statements until we=wem
-        [t,x]=ode45(@(t,x) Differential_EQ(t, x, param, vinf, dvar, ni), [t0 tf], x0); % Don't need to manipulate data again
+        [t,x]=ode23(@(t,x) Differential_EQ(t, x, param, vinf, dvar, ni), [t0 tf], x0); % Don't need to manipulate data again
         v=x(:,1);  % Speed
         s=x(:,2);  % Distance
+        
+%         f = Differential_EQ(t, x, param, vinf, dvar, ni);
+%         acc = f(2);
         
         we = ni*v/vinf.rwh; % rad/sec          % Does not depend on gear if you are only doing the motor!!
         we_sim = ni*v/vinf.rwh;
@@ -48,19 +57,24 @@ for i=1: length(ng) % Loop for gears
         acc=(Fti-Frl)/vinf.m;             % Differential equation for speed
         
         check = check + 1;
-        
         if mean(acc) < 0.05
-            break;
+            TOO_LONG = 0;
+            break; 
         end
         
         if (we < wem)
-            tf = tf + 0.5;
+            tf = tf + 1;
         end
         
+        if tf > 100
+            TOO_LONG = 1;
+            break;    
+        else
+            TOO_LONG = 0;
+        end
     end
     
     if check > 1  % Otherwise, just shift
-        
         % Save Variables
         V_sim = [V_sim; v(2:end)/param.mph_mps]; % MPH
         Fti_sim = [Fti_sim; Fti(2:end)];
@@ -77,29 +91,44 @@ for i=1: length(ng) % Loop for gears
         t0 = max(t);
         tf = tf + 0.5;
         x0=[v(end) s(end)];
-        
         clear acc
     end
 end
 
-if check > 1
+if check > 1 && TOO_LONG ~= 1
     
-    [A,I] = min(abs(time_sim - dt_2));
-    Final_Velocity = V_sim(I);
-    
-    if isempty(Final_Velocity)
-        Final_Velocity = 0;
+    if TYPE == 1  % Final Velocity Req.
+        [A,I] = min(abs(time_sim - dt_2));
+        Final_Velocity = V_sim(I);
+        
+        if isempty(Final_Velocity)
+            Final_Velocity = 0;
+        end
+        
+        if Final_Velocity < V_f
+            PASS = 0;            % Failed
+        else
+            PASS = 1;
+        end
+        
+    else   % Acceleration req.
+        Acc_Test = max(acc_sim);
+        
+        if isempty(Acc_Test)
+            Acc_Test = 0;
+        end
+        
+        if Acc_Test < Acc_Final
+            PASS = 0;            % Failed
+        else
+            PASS = 1;
+        end
+        
     end
-    n = 2;
-end
-
-Sim_Variables = [x_sim,V_sim,acc_sim,Teng_sim,Tm_sim,We_sim,Wm_sim,time_sim];
-
-if Final_Velocity < V_f
-    PASS = 0;            % Failed
 else
-    PASS = 1;
+    PASS = 0;                   % Failed - Did not simulate for more than 0.5 s
 end
+Sim_Variables = [x_sim,V_sim,acc_sim,Teng_sim,Tm_sim,We_sim,Wm_sim,time_sim];
 end
 
 

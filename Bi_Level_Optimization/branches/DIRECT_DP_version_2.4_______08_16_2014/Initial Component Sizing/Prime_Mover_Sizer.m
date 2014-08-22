@@ -4,13 +4,6 @@
 clear all
 close all
 clc
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%---Determine Acceleration Req. Based off Drive Cycles--------------------%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-S = 10;                    % Number of points to calcualte acceleration at
-dt_2 = 0.1;
-graph = 0;
-[ V_0, V_f, Acc_Final ] = Accel_Req( S, dt_2, graph );  % V_Final is in MPH
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %------------------Load the Component Data--------------------------------%
@@ -23,20 +16,22 @@ cd('Components');
 Engine_2rz_0410;
 
 % Motor
-Motor_75_kW;
+% Motor_75_kW;
+Motor_30_kW;
 
 Battery_ADVISOR;
 
 % Vehicle
-Vehicle_Parameters_4_HI_AV;
+% Vehicle_Parameters_4_HI_AV;
+Vehicle_Parameters_4_HI;
 cd ..
 
 data;                              %  Put all the data into structures
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------Design Variables--------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-dvar.fc_trq_scale = 0.8;
-dvar.mc_trq_scale = 1.0;
+dvar.fc_trq_scale = 1;
+dvar.mc_trq_scale = 1;
 dvar.FD = 3;
 dvar.G = 1;  % Also change this so that you can get to the maximum speed!
 
@@ -48,7 +43,7 @@ Manipulate_Data_Structure;     % Update the data based off of the new variables
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 test = 1; % Zero Grade (Max Speed)
 ttt = 1;
-for FD = 1:0.1:8
+for FD = 1:0.05:8
     dvar.FD = FD;
     [~,~, V_max_t, ~, V_max_6,~] = Engine_Power_Sizer( param, vinf, dvar, test ); 
    
@@ -66,22 +61,21 @@ for FD = 1:0.1:8
     ttt = ttt + 1;
 end
 
-[Max_Spd, I] = max(V_6/param.mph_mps);
-% Final_Drive_Plot;
+[Max_Spd_temp, I_temp] = max(V_6);
+FD_final = FD_sim(I_temp)*0.9;
+[Junk, I] = min(abs(FD_final - FD_sim)); 
+Max_Spd = V_6(I);
+Final_Drive_Plot;
 
 % Resimualte with selected gear ratio
     dvar.FD = FD_sim(I);
     [Sim_Grade,F_max_t, V_max_t, F_max_6, V_max_6, RR ] = Engine_Power_Sizer( param, vinf, dvar, test ); 
-    Grade_Plot;
+    Grade_Plot_1;
 
 %% Now size the engine so that it meets the rest of the grade requirements
 test = 2;
 V_test = 55*param.mph_mps;
-dvar
- [Sim_Grade,F_max_t, V_max_t, F_max_6, V_max_6, RR ] = Engine_Power_Sizer( param, vinf, dvar, test );
-Grade_Plot;
 
-%%
 iii = 1;
 for fc_trq_scale = 0.5:0.01:1.75
     dvar.fc_trq_scale = fc_trq_scale;
@@ -108,7 +102,7 @@ fc_trq_sim(I)  % If the fc_trq scale goes up then it will not lower the final sp
 dvar.fc_trq_scale = fc_trq_sim(I);
 Manipulate_Data_Structure;  % Update the data based off of the new motor power and battery module
 [Sim_Grade,F_max_t, V_max_t, F_max_6, V_max_6, RR ] = Engine_Power_Sizer( param, vinf, dvar, test );
-Grade_Plot;
+Grade_Plot_1;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %---------------------------Motor Gear -----------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -154,7 +148,17 @@ G_sim(I)
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %---------------------------Motor Size  ----------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%% Initialize Stuff
+%%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%---Determine Acceleration Req. Based off Drive Cycles--------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+clear V_0 V_f
+S = 10;                    % Number of points to calcualte acceleration at
+dt_2 = 0.0002;
+graph = 1;
+[ V_0, V_f, Acc_Final ] = Accel_Req_2( S, dt_2, graph );  % V_Final is in MPH
+% [ V_0, V_f, Acc_Final ] = Accel_Req( S, dt_2, graph );  % Includes US06
+% Initialize Stuff
 V_sim_full = [];
 We_sim_full = [];
 Wm_sim_full = [];
@@ -164,25 +168,33 @@ Teng_sim_full = [];
 Tm_sim_full = [];
 time_sim_full = [];
 
-dvar.mc_trq_scale = 1.4;
+dvar.mc_trq_scale = 1;
 mc_max_pwr_kW =  dvar.mc_trq_scale*vinf.mc_max_pwr_kW;
 dvar.module_number = ceil(4*mc_max_pwr_kW*1000*Rint_size/(Voc_size^2));
 Manipulate_Data_Structure;
 
-
-dt_2 = 0.1;
 index(1) = [1];
-
-for i = 1:length(V_0)
-    [ PASS, Sim_Variables ] = Acceleration_Test(V_0(i),V_f(i), dt_2, param, vinf, dvar);
-    Pass_Total(i) = PASS;
+for i = 1:(length(V_0)+1)
     
+    if i == (length(V_0)+1)
+        TYPE = 1; % Velocity req.
+        V_0_n = 0;
+        V_f_n = 60;
+        dt_2 = 12;
+        Acc_Final = 100;  % Does not matter
+        [ PASS, Sim_Variables ] = Acceleration_Test(V_0_n,V_f_n, Acc_Final, dt_2, param, vinf, dvar, TYPE);
+    else
+        TYPE = 0; % Acceleration req.
+        [ PASS, Sim_Variables ] = Acceleration_Test(V_0(i),V_f(i), Acc_Final(i), dt_2, param, vinf, dvar, TYPE);
+        
+    end
+    Pass_Total(i) = PASS;
     index(i+1) = [index(i) + length(Sim_Variables(2:end,1))];
     
-    % Save Variables 
+    % Save Variables
     x_sim_full = [ x_sim_full;Sim_Variables(:,1)];
     V_sim_full = [V_sim_full; Sim_Variables(:,2)]; % MPH
-    acc_sim_full = [ acc_sim_full; Sim_Variables(:,3)]; 
+    acc_sim_full = [ acc_sim_full; Sim_Variables(:,3)];
     Teng_sim_full = [Teng_sim_full; Sim_Variables(:,4)];
     Tm_sim_full = [Tm_sim_full; Sim_Variables(:,5)];
     We_sim_full = [We_sim_full; Sim_Variables(:,6)];   % RPM
@@ -205,8 +217,8 @@ if ~isempty(I)
 else
     e = 1;
 end
-%%
-% e = 6;
+%
+e = (length(V_0)+1);
 
 start = index(e)+ e;
 stop = index(e+1);
@@ -224,6 +236,7 @@ time_sim = time_sim_full(start:stop);
 Kinematics_Plot;
 Kinetics_Plot;
 
+dvar
 
 
 

@@ -17,9 +17,7 @@ Cd = 0.28; % Drag Coefficient
 rwh = 0.287;   % Define the radius of the tire (m)
 Frr = 0.015;  % Rolling Resistance
 grade = 0; % Road Grade
-% FD = 3.4; % Final Drive Ratio
 Af = 2.52;  % [m^2], vehicle frontal area (m^2)
-% G = 3;  
 nt = 1;  % Transmission Efficency
 
 % Define Conversion Factors
