@@ -93,11 +93,13 @@ for t = 1:cyc_data.time_cyc
                         We_c = 0;                            % [rad/sec]
                         Wm_c = cyc_data.Ww(t)*dvar.FD*dvar.G;              % [rad/sec]
                         Te_c = zeros(u1_length,1);           % Turn the engine off
+                        Te_drive = zeros(u1_length,1);
                     else                                                             % Engine is on
                         ENG_state_n = 1;
                         We_c = cyc_data.Ww(t)*dvar.FD*x3_n;                % [rad/sec]
                         Taux = vinf.Paux/We_c;
-                        Te_c =  u1_grid - Taux;                      % Engine Control, [u1]x[1]- What if this becomes negative!!
+                        Te_c =  u1_grid + Taux;                      % Engine Control, [u1]x[1]
+                        Te_drive = u1_grid;                          % This goes to drive the vehicle
                         Wm_c = cyc_data.Ww(t)*dvar.FD*dvar.G;              % [rad/sec]
                     end
                     
@@ -107,7 +109,7 @@ for t = 1:cyc_data.time_cyc
                         Te_c = Taux*ones(size(Te_c));
                         Tm_c = cyc_data.Tw(t)/(dvar.FD*dvar.G)*ones(size(Te_c)); % Engine is not connected to motor
                     else
-                        Tm_c = cyc_data.Tw(t)/(dvar.FD*dvar.G)*ones(size(Te_c)) - Te_c*x3_n/dvar.G;  % [u1]x[1]
+                        Tm_c = cyc_data.Tw(t)/(dvar.FD*dvar.G)*ones(size(Te_c)) - Te_drive*x3_n/dvar.G;  % [u1]x[1]
                     end
                     
                     % Check Motor
@@ -470,12 +472,14 @@ for t = 1:1:cyc_data.time_cyc
     
     if ENG_state_n == 0;
         Te_c = 0;
+        Te_drive = 0;
         We_c = 0;                              % [rad/sec]
         Wm_c = cyc_data.Ww(t)*dvar.FD*dvar.G;              % [rad/sec]
     else
         We_c = cyc_data.Ww(t)*dvar.FD*GEAR_n;                % [rad/sec]
         Taux = vinf.Paux/We_c;
-        Te_c = u1_grid(id_lookup_u1) - Taux;
+        Te_c = u1_grid(id_lookup_u1) + Taux;
+        Te_drive = u1_grid(id_lookup_u1);
         Wm_c = cyc_data.Ww(t)*dvar.FD*dvar.G;              % [rad/sec]
     end
     
@@ -485,7 +489,7 @@ for t = 1:1:cyc_data.time_cyc
         Te_c = Taux;
         Tm_c = cyc_data.Tw(t)/(dvar.FD*dvar.G);  % Engine is disconnected
     else
-        Tm_c = cyc_data.Tw(t)/(dvar.FD*dvar.G) - Te_c*GEAR_n/dvar.G;  % [1]x[1]
+        Tm_c = cyc_data.Tw(t)/(dvar.FD*dvar.G) - Te_drive*GEAR_n/dvar.G;  % [1]x[1]
     end
     
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%

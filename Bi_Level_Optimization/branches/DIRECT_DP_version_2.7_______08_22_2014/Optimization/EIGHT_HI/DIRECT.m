@@ -81,8 +81,8 @@ x_L=[    0.5*dvar.FD, 0.5*dvar.G, 0.5*dvar.fc_trq_scale, 0.5*dvar.mc_trq_scale]'
 x_U=[    1.5*dvar.FD, 1.5*dvar.G, 1.5*dvar.fc_trq_scale, 1.5*dvar.mc_trq_scale]';
    
 con_names={'FAIL', 'delta_SOC','FAIL_ACCEL_TEST','FAIL_GRADE_TEST'}; % They Also Did not Do Grade and Acceleration Tests!
-c_L=[          0;      -0.005;         0;                0];
-c_U=[          0;       0.005;         0;                0];
+c_L=[          0;      -0.01;         0;                0];
+c_U=[          0;       0.01;         0;                0];
 
 % Define the Problem
 PriLev = 2;                      % 1 is no graph 2 shows a graph

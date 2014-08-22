@@ -52,10 +52,10 @@ dvar.module_number = 15;  % Fixed (for now) - also NEED to change in both obj an
 
 %                              ~~ Standard ~~
 
-% cyc_name = 'HWFET';
+cyc_name = 'HWFET';
 % cyc_name = 'UDDS';
 % cyc_name = 'US06';
-cyc_name = 'SHORT_CYC_HWFET';
+% cyc_name = 'SHORT_CYC_HWFET';
 % cyc_name = 'RAMP';
 % cyc_name = 'LA92';
 % cyc_name = 'CONST_65';
@@ -79,13 +79,13 @@ x_L=[    0.5*dvar.FD, 0.5*dvar.G, 0.5*dvar.fc_trq_scale, 0.5*dvar.mc_trq_scale]'
 x_U=[    1.5*dvar.FD, 1.5*dvar.G, 1.5*dvar.fc_trq_scale, 1.5*dvar.mc_trq_scale]';
    
 con_names={'FAIL', 'delta_SOC','FAIL_ACCEL_TEST','FAIL_GRADE_TEST'}; % They Also Did not Do Grade and Acceleration Tests!
-c_L=[          0;      -0.005;         0;                0];
-c_U=[          0;       0.005;         0;                0];
+c_L=[          0;      -0.01;         0;                0];
+c_U=[          0;       0.01;         0;                0];
 
 % Define the Problem
 PriLev = 2;                      % 1 is no graph 2 shows a graph
-MaxEval = 5;
-MaxIter = 4;
+MaxEval = 500;
+MaxIter = 499;
 GLOBAL.epsilon = 1e-4;
 
 % Define the Objective function Name for the GRAPH

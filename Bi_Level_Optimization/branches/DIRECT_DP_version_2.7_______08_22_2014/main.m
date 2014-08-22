@@ -9,15 +9,15 @@ tic
 
 cd('Components');
 %                              ~~ Engine ~~
-Engine_2rz_0410;   % Set all optimal engine speeds
-% Engine_102_kW;
+% Engine_2rz_0410;   % Set all optimal engine speeds
+Engine_102_kW;
 % Engine_41_kW;
 
 %                              ~~ Motor ~~
 % Motor_int;
 % Motor_75_kW;
-Motor_30_kW;
-% Motor_49_kW;
+% Motor_30_kW;
+Motor_49_kW;
 
 %                             ~~ Battery ~~
 % Battery_int;  % No variation with the number of modules in this battery!!
@@ -25,9 +25,9 @@ Battery_ADVISOR;
 
 %                              ~~ Vehicle ~~
 
-Vehicle_Parameters_4_HI_AV;
+% Vehicle_Parameters_4_HI_AV;
 % Vehicle_Parameters_4_HI;
-% Vehicle_Parameters_8_HI_AV;
+Vehicle_Parameters_8_HI_AV;
 % Vehicle_Parameters_8_HI;
 
 cd .. 
@@ -39,13 +39,13 @@ data;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %---------------------Update the Design Variables-------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-dvar.FD = 3.65;
-dvar.G = 1.6;
-dvar.fc_trq_scale =  0.87;
-dvar.mc_trq_scale = 1;
+dvar.FD = 4.45;
+dvar.G = 1.5;
+dvar.fc_trq_scale =  0.95;
+dvar.mc_trq_scale = 0.9;
 mc_max_pwr_kW =  dvar.mc_trq_scale*vinf.mc_max_pwr_kW;
 % dvar.module_number = ceil(4*mc_max_pwr_kW*1000*Rint_size/(Voc_size^2));
-dvar.module_number = 19;  
+dvar.module_number = 28;  % Fixed (for now) - also NEED to change in both obj and con!!!!!
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %---------------------Update the Data-------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
