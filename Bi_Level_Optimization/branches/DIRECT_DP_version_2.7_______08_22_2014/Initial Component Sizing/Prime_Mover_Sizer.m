@@ -18,9 +18,9 @@ Engine_102_kW;
 
 % -----------------Motor
 
-Motor_75_kW;
+% Motor_75_kW;
 % Motor_30_kW;
-
+Motor_49_kW;
 % ----------------Battery
 
 Battery_ADVISOR;
@@ -29,8 +29,8 @@ Battery_ADVISOR;
 
 % Vehicle_Parameters_4_HI_AV;
 % Vehicle_Parameters_4_HI;
-% Vehicle_Parameters_8_HI_AV;
-Vehicle_Parameters_8_HI;
+Vehicle_Parameters_8_HI_AV;
+% Vehicle_Parameters_8_HI;
 cd ..
 
 data;                              %  Put all the data into structures
@@ -175,7 +175,7 @@ Teng_sim_full = [];
 Tm_sim_full = [];
 time_sim_full = [];
 
-dvar.mc_trq_scale = 0.8;
+dvar.mc_trq_scale = 0.9;
 mc_max_pwr_kW =  dvar.mc_trq_scale*vinf.mc_max_pwr_kW;
 dvar.module_number = ceil(4*mc_max_pwr_kW*1000*Rint_size/(Voc_size^2));
 Manipulate_Data_Structure;

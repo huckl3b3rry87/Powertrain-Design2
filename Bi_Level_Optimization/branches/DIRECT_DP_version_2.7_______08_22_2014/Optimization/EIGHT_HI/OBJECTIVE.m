@@ -11,7 +11,7 @@ dvar.FD = x(1);
 dvar.G = x(2);
 dvar.fc_trq_scale = x(3);
 dvar.mc_trq_scale = x(4);  
-dvar.module_number = 19;  % Fixed (for now) - should be passing this..
+dvar.module_number = 28;  % Fixed (for now) - should be passing this..
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-----------Manipulate Data Based of Scaling Factors----------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%

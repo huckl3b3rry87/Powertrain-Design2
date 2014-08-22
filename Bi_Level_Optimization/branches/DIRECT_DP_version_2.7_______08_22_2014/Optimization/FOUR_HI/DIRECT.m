@@ -52,10 +52,10 @@ dvar.module_number = 15;  % Fixed (for now) - also NEED to change in both obj an
 
 %                              ~~ Standard ~~
 
-cyc_name = 'HWFET';
+% cyc_name = 'HWFET';
 % cyc_name = 'UDDS';
 % cyc_name = 'US06';
-% cyc_name = 'SHORT_CYC_HWFET';
+cyc_name = 'SHORT_CYC_HWFET';
 % cyc_name = 'RAMP';
 % cyc_name = 'LA92';
 % cyc_name = 'CONST_65';
@@ -84,8 +84,8 @@ c_U=[          0;       0.005;         0;                0];
 
 % Define the Problem
 PriLev = 2;                      % 1 is no graph 2 shows a graph
-MaxEval = 500;
-MaxIter = 499;
+MaxEval = 5;
+MaxIter = 4;
 GLOBAL.epsilon = 1e-4;
 
 % Define the Objective function Name for the GRAPH

@@ -9,23 +9,25 @@ tic
 
 cd('Components');
 %                              ~~ Engine ~~
-Engine_2rz_0410;   % Set all optimal engine speeds
-% Engine_102_kW;
+% Engine_2rz_0410;   % Set all optimal engine speeds
+Engine_102_kW;
 % Engine_41_kW;
 
 %                              ~~ Motor ~~
 % Motor_int;
 % Motor_75_kW;
-Motor_30_kW;
+% Motor_30_kW;
+Motor_49_kW;
 
 %                             ~~ Battery ~~
 % Battery_int;  % No variation with the number of modules in this battery!!
 Battery_ADVISOR;
 
 %                              ~~ Vehicle ~~
-
-Vehicle_Parameters_4_HI_AV;
+% Vehicle_Parameters_4_HI_AV;
 % Vehicle_Parameters_4_HI;
+% Vehicle_Parameters_8_HI_AV;
+Vehicle_Parameters_8_HI;
 
 cd .. 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -39,20 +41,20 @@ vinf_data = struct2cell(vinf);
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %---------------------Update the Design Variables-------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~d%
-dvar.FD = 3.65;
-dvar.G = 1.6;
-dvar.fc_trq_scale =  0.87;
-dvar.mc_trq_scale = 1;
+dvar.FD = 4.45;
+dvar.G = 1.5;
+dvar.fc_trq_scale =  0.92;
+dvar.mc_trq_scale = 0.9;
 mc_max_pwr_kW =  dvar.mc_trq_scale*vinf.mc_max_pwr_kW;
 % dvar.module_number = ceil(4*mc_max_pwr_kW*1000*Rint_size/(Voc_size^2));
-dvar.module_number = 19;  % Fixed (for now) - also NEED to change in both obj and con!!!!!
+dvar.module_number = 28;  % Fixed (for now) - also NEED to change in both obj and con!!!!!
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %---------------------Select Drive Cycle----------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
 %                              ~~ Standard ~~
 
-% cyc_name = 'HWFET';
+cyc_name = 'HWFET';
 % cyc_name = 'UDDS';
 % cyc_name = 'US06';
 % cyc_name = 'SHORT_CYC_HWFET';
@@ -66,7 +68,7 @@ dvar.module_number = 19;  % Fixed (for now) - also NEED to change in both obj an
 %                              ~~ AV~~
 
 % cyc_name = 'US06_AV';
-cyc_name = 'HWFET_AV';
+% cyc_name = 'HWFET_AV';
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %---------------------Run Optimization------------------------------------%
@@ -84,8 +86,8 @@ c_U=[          0;       0.005;         0;                0];
 
 % Define the Problem
 PriLev = 2;                      % 1 is no graph 2 shows a graph
-MaxEval = 5;
-MaxIter = 4;
+MaxEval = 500;
+MaxIter = 499;
 GLOBAL.epsilon = 1e-4;
 
 % Define the Objective function Name for the GRAPH

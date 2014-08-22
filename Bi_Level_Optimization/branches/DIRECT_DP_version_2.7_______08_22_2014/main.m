@@ -17,6 +17,8 @@ Engine_2rz_0410;   % Set all optimal engine speeds
 % Motor_int;
 % Motor_75_kW;
 Motor_30_kW;
+% Motor_49_kW;
+
 %                             ~~ Battery ~~
 % Battery_int;  % No variation with the number of modules in this battery!!
 Battery_ADVISOR;
@@ -25,6 +27,8 @@ Battery_ADVISOR;
 
 Vehicle_Parameters_4_HI_AV;
 % Vehicle_Parameters_4_HI;
+% Vehicle_Parameters_8_HI_AV;
+% Vehicle_Parameters_8_HI;
 
 cd .. 
 
@@ -41,8 +45,7 @@ dvar.fc_trq_scale =  0.87;
 dvar.mc_trq_scale = 1;
 mc_max_pwr_kW =  dvar.mc_trq_scale*vinf.mc_max_pwr_kW;
 % dvar.module_number = ceil(4*mc_max_pwr_kW*1000*Rint_size/(Voc_size^2));
-dvar.module_number = 19;
-
+dvar.module_number = 19;  
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %---------------------Update the Data-------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -51,7 +54,7 @@ Manipulate_Data_Structure;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %---------------------Select Drive Cycle-------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-
+% 
 % cyc_name = 'HWFET';
 % cyc_name = 'UDDS';
 % cyc_name = 'US06';
