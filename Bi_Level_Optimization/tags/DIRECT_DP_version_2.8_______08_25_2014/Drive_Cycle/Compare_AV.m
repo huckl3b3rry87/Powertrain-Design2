@@ -43,11 +43,11 @@ save('D10AV','cyc_mph');
 clear
 cyc_name = 'Natralistic Ann Arbor Drive Cycle';
 load D10AV;
-AV_SPD = cyc_mph(:,2);
+AV_SPD = cyc_mph(:,2)*2.23694;
 
 load D10;
 
-SPD = cyc_mph(:,2);
+SPD = cyc_mph(:,2)*2.23694;
 figure(1);
 plot(cyc_mph(:,1),SPD)
 hold on
@@ -81,3 +81,76 @@ set(gca,'fontSize',12,'fontWeight','bold')
 title({cyc_name},'fontWeight','bold','fontSize',16)
 grid on;
 magnifyOnFigure;
+%%
+clear
+cyc_name = 'Natralistic Ann Arbor Drive Cycle';
+dt = 1;
+load D8;
+SPD = cyc_mph(:,2)*2.23694; % Assuming data is in m/s convert to mph 
+v = cyc_mph(:,2);
+% SPD = cyc_mph(:,2);
+figure(1);
+plot(cyc_mph(:,1),SPD)
+
+legend('Driver 10')
+ylabel('Speed (mph)','fontWeight','bold','fontSize',12)
+xlabel('time (sec)','fontWeight','bold','fontSize',12);
+set(gca,'fontSize',12,'fontWeight','bold'),grid on
+title({cyc_name},'fontWeight','bold','fontSize',16)
+grid on;
+for i = 2:size(SPD)   % Backwards difference omits first point
+    a(i) = (v(i) - v(i-1))/dt;
+end
+figure(2)
+plot(cyc_mph(:,1),a)
+legend('Acceleration (m/s^2)')
+
+%%
+clear
+mph_mps = 0.44704; 
+cyc_name = 'Natralistic Ann Arbor Drive Cycle';
+dt = 1;
+load D6;
+SPD = cyc_mph(:,2); 
+v = cyc_mph(:,2)*mph_mps; % Assuming data is in mph convert to m/s
+% SPD = cyc_mph(:,2);
+figure(1);
+plot(cyc_mph(:,1),SPD)
+
+legend('Driver 10')
+ylabel('Speed (mph)','fontWeight','bold','fontSize',12)
+xlabel('time (sec)','fontWeight','bold','fontSize',12);
+set(gca,'fontSize',12,'fontWeight','bold'),grid on
+title({cyc_name},'fontWeight','bold','fontSize',16)
+grid on;
+for i = 2:size(SPD)   % Backwards difference omits first point
+    a(i) = (v(i) - v(i-1))/dt;
+end
+figure(2)
+plot(cyc_mph(:,1),a)
+legend('Acceleration (m/s^2)')
+
+%%
+clear
+kmh_mph = 0.621; 
+cyc_name = 'Natralistic Ann Arbor Drive Cycle';
+dt = 1;
+load D2;
+SPD = cyc_mph(:,2)*kmh_mph; 
+v = cyc_mph(:,2)*0.27777; % Assuming data is in mph convert to m/s
+% SPD = cyc_mph(:,2);
+figure(1);
+plot(cyc_mph(:,1),SPD)
+
+legend('Driver 10')
+ylabel('Speed (mph)','fontWeight','bold','fontSize',12)
+xlabel('time (sec)','fontWeight','bold','fontSize',12);
+set(gca,'fontSize',12,'fontWeight','bold'),grid on
+title({cyc_name},'fontWeight','bold','fontSize',16)
+grid on;
+for i = 2:size(SPD)   % Backwards difference omits first point
+    a(i) = (v(i) - v(i-1))/dt;
+end
+figure(2)
+plot(cyc_mph(:,1),a)
+legend('Acceleration (m/s^2)')
