@@ -55,6 +55,9 @@ dvar.G = 1;  % Also change this so that you can get to the maximum speed!
 mc_max_pwr_kW =  dvar.mc_trq_scale*vinf.mc_max_pwr_kW;
 dvar.module_number = ceil(4*mc_max_pwr_kW*1000*Rint_size/(Voc_size^2));
 Manipulate_Data_Structure;     % Update the data based off of the new variables
+
+Manipulate_Drive_Cycle;
+pause;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %--------------------------Engine Power-----------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
