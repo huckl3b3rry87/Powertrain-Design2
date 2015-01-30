@@ -14,17 +14,18 @@ figure(16); clf;
 axis([0 5500 0 max(vinf.eng_max_trq+5)]);
 hold on;
 plot(eng_map_spd*rads2rpm, vinf.eng_max_trq, 'k', 'linewidth', 8);
+hold on 
+plot(sim.W_eng*rads2rpm,sim.T_eng, 'mo', 'markersize', 10, 'markerf', 'k','linewidth',2),grid
 xlabel('Speed (RPM)');
 ylabel('Torque (Nm)');
-title('Engine')
-set(gca,'FontSize',16,'fontWeight','bold')
-set(findall(gcf,'type','text'),'FontSize',22,'fontWeight','bold')
-legend('BSFC (g/kWh)','Maximum Torque','Opperating Points')   
+set(gca,'FontSize',14,'fontWeight','bold')
+set(findall(gcf,'type','text'),'FontSize',18,'fontWeight','bold')
+legend('BSFC (g/kWh)','Maximum Torque','Opperating Points','FontSize',5)   
 
 h = gcf;
 load('EngineColorMap','mycmap')
 set(h,'Colormap',mycmap)
-colorbar('FontSize',16,'fontWeight','bold','YDir','reverse')
+colorbar('FontSize',14,'fontWeight','bold','YDir','reverse')
 
 % set(h,'Colormap',flipud(mycmap))
 % colorbar('FontSize',16,'fontWeight','bold',)

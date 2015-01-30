@@ -55,7 +55,7 @@ data;
 e = 1;
 dvar.FD = 4.25*e;
 dvar.G = 1.7*e;
-dvar.fc_trq_scale = 3.16667*e;
+dvar.fc_trq_scale = e;
 dvar.mc_trq_scale = 1*e;
 mc_max_pwr_kW =  dvar.mc_trq_scale*vinf.mc_max_pwr_kW;
 dvar.module_number = ceil(4*mc_max_pwr_kW*1000*Rint_size/(Voc_size^2));
@@ -97,10 +97,10 @@ cyc_name = 'HWFET';
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-----------------Weighing Parameters for DP------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-weight.fuel = 1.4776/1.4776;
-weight.NOx = 0/0.0560;
-weight.CO = 0/0.6835;
-weight.HC = 0/0.0177;
+weight.fuel = 1*1.4776/1.4776;
+weight.NOx = 0*1.4776/0.0560;
+weight.CO = 0*1.4776/0.6835;
+weight.HC = 0*1.4776/0.0177;
 weight.shift = 0.2;
 weight.engine_event = 25; % Is then multiplied by fc_trq_scale
 
@@ -117,12 +117,16 @@ if RUN_TYPE == 0
     cd('Plots')
     Main_Plot;
     Engine_Plot;
+    Engine_NOx_Plot;
+    Engine_HC_Plot;
+    Engine_CO_Plot;
     Motor_Plot;
     %     Cost_Plot;
     Battery_Plot;
     cd ..
-    MPG
-    emission.NOx
+    MPG 
+    delta_SOC
+    emission
     FAIL
     
 end

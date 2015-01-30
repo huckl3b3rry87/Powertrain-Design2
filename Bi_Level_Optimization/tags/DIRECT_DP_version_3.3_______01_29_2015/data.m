@@ -44,6 +44,9 @@ vinf.Te_min_orig = Te_min;
 vinf.fc_max_pwr = fc_max_pwr;
 vinf.eng_consum_fuel_orig = eng_consum_fuel;
 vinf.optimal_eng_spd = optimal_eng_spd;
+vinf.fc_hc_map_orig = fc_hc_map;
+vinf.fc_co_map_orig = fc_co_map;
+vinf.fc_nox_map_orig = fc_nox_map;
 
 % Battery
 vinf.ess_r_dis_orig = ess_r_dis;
@@ -54,6 +57,7 @@ vinf.ess_soc = ess_soc;
 vinf.ess_max_pwr_dis = ess_max_pwr_dis;
 vinf.ess_max_pwr_chg = ess_max_pwr_chg;
 vinf.ess_module_mass_orig = ess_module_mass;
+vinf.ess_coulombic_eff = ess_coulombic_eff;
 
 % Transmission
 vinf.gear = gear;

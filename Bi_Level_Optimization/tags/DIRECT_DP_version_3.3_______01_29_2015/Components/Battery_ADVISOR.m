@@ -1,7 +1,6 @@
 
 % ADVISOR data file:  ESS_LI7_temp.m
-% 
-%module_number = 63; % Could round later
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Temperature range over which data is defined
@@ -22,12 +21,15 @@ ess_voc=[3.44 3.473 3.496 3.568 3.637 3.757 3.896;
 3.128 3.36 3.44 3.528 3.623 3.761 3.899]*3; % (V)
 
 ess_cap_ah=[5.943 7.035 7.405]; % (A*h), max. capacity at C/3 rate, indexed by ess_tmp
+% average coulombic (a.k.a. amp-hour) efficiency below, indexed by ess_tmp
+ess_coulombic_eff=[0.968 0.99 0.992];  % (--)
 
 %Assunme that the battery pack is 41 C
 ess_r_dis = ess_r_dis(3,:);
 ess_r_chg = ess_r_chg(3,:);
 ess_voc = ess_voc(3,:);
 ess_cap_ah = ess_cap_ah(3);
+ess_coulombic_eff = ess_coulombic_eff(3);
 
 % For Battery sizing
 Rint_size = [ess_r_dis(4)];  % was divided by module number

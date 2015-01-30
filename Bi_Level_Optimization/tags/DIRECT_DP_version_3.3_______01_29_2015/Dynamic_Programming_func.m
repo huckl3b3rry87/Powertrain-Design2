@@ -1,6 +1,6 @@
 % Dynamic Programming - written by Huckleberry Febbo - 07/20/2014
 
-function [FAIL, MPG, delta_SOC, sim] = Dynamic_Programming_func(param, vinf, dvar, cyc_data, RUN_TYPE)
+function [FAIL, MPG, emission, delta_SOC, sim] = Dynamic_Programming_func(param, vinf, dvar, cyc_data, RUN_TYPE, weight)
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %---------------------Create New Tables-----------------------------------%
@@ -14,14 +14,12 @@ mkdir(tables)
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
 %Define State Grids
-x1_grid = [0.4:0.005:0.8]';       % SOC
+x1_grid = [0.4:0.001:0.8]';       % SOC
 x1_length = length(x1_grid);
 
 x2_grid = [0 1];   % Engine off (0)   &   Engine on (1)
 x2_length = length(x2_grid);
 
-% x3_grid = [4.484 2.872 1.842 1.414 1.000 0.742];  % [1st 2nd...]             % Gear Level
-% x3_length = length(x3_grid);
 x3_grid = vinf.gear;  % [1st 2nd...]             % Gear Level
 x3_length = length(x3_grid);
 
@@ -70,7 +68,7 @@ for t = 1:cyc_data.time_cyc
             end
             
             if u2 == 1 || u2 == 3  % Shift penalty
-                Shift_Penalty = 0.2;
+                Shift_Penalty = weight.shift;
             else
                 Shift_Penalty = 0;
             end
@@ -85,7 +83,7 @@ for t = 1:cyc_data.time_cyc
                 for u3 = 1:u3_length         % Engine Control
                     
                     if  ENG_state_c == 0 && u3 == 2   % Engine will be turned on - Done later in the code..this is the same thing though.
-                        Eng_Penalty = dvar.fc_trq_scale*25;
+                        Eng_Penalty = dvar.fc_trq_scale*weight.engine_event;
                     else
                         Eng_Penalty = 0;
                     end
@@ -145,14 +143,18 @@ for t = 1:cyc_data.time_cyc
                     
                     if ENG_state_n == 1
                         fuel = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.eng_consum_fuel,Te_c,We_c,'linear')*cyc_data.dt)';
+                        NOx = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_nox_map,Te_c,We_c,'linear')*cyc_data.dt)';
+                        CO = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_co_map,Te_c,We_c,'linear')*cyc_data.dt)';
+                        HC = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_hc_map,Te_c,We_c,'linear')*cyc_data.dt)';
                     else
                         fuel = zeros(size(Te_c));
-                    end
+                        NOx = zeros(size(Te_c));
+                        CO = zeros(size(Te_c));
+                        HC = zeros(size(Te_c));
+                    end                    
+                    inst_fuel(x2,x3,:,u2,u3) = weight.fuel*fuel + weight.NOx*NOx + weight.CO*CO + weight.HC*HC + Shift_Penalty*ones(size(fuel)) + Eng_Penalty*ones(size(fuel));
                     
-                    inst_fuel(x2,x3,:,u2,u3) = fuel + Shift_Penalty*ones(size(fuel)) + Eng_Penalty*ones(size(fuel));
-                    
-                    % Update x1
-                    
+                    % Update x1                    
                     % Saturate the motor for the efficiency lookup table
                     Tm_c(Tm_c > Tm_max_current) = Tm_max_current(Tm_c > Tm_max_current);
                     Tm_c(Tm_c < -Tm_max_current) = -Tm_max_current(Tm_c < -Tm_max_current);
@@ -162,8 +164,8 @@ for t = 1:cyc_data.time_cyc
                     eff_m = interp2(vinf.m_map_trq, vinf.m_map_spd, vinf.m_eff_map, Tm_c, abs(Wm_c))';
                     eff_m(isnan(eff_m)) = 0.2;
                     
-                    Pbat_charge = (Wm_c*Tm_c).*(eff_m);    % Tm_c < 0
-                    Pbat_discharge = (Wm_c*Tm_c)./(eff_m);
+                    Pbat_charge = (Wm_c*Tm_c).*(eff_m*vinf.ess_coulombic_eff);    % Tm_c < 0
+                    Pbat_discharge = (Wm_c*Tm_c)./(eff_m*vinf.ess_coulombic_eff); % Battery needs to supply more power!!
                     
                     Pbat = Pbat_discharge;
                     Pbat(Tm_c < 0) = Pbat_charge(Tm_c < 0);
@@ -297,7 +299,7 @@ cd ..  % Come out of the folder
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
 % Define Parameters
-BETA = 91000;
+BETA = 200000;
 Desired_SOC = 0.55; % When you do the optimization - Extract solutions from the middle
 
 folder = [cyc_data.cyc_name, ' TABLES'];
@@ -378,7 +380,7 @@ cd ..
 
 %%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%--------------------------Simulate Final Runs----------------------------%
+%--------------------------Simulate Final Run-----------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 if RUN_TYPE == 0
     clc
@@ -528,8 +530,14 @@ for t = 1:1:cyc_data.time_cyc
     
     if ENG_state_n == 1;
         fuel = interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.eng_consum_fuel,Te_fuel,We_fuel,'linear')*cyc_data.dt;
+        NOx = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_nox_map,Te_fuel,We_fuel,'linear')*cyc_data.dt)';
+        CO = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_co_map,Te_fuel,We_fuel,'linear')*cyc_data.dt)';
+        HC = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_hc_map,Te_fuel,We_fuel,'linear')*cyc_data.dt)';
     else
         fuel = 0;
+        NOx = 0;
+        CO = 0;
+        HC = 0;
     end
     
     %                          ~Motor Speed~
@@ -660,6 +668,9 @@ for t = 1:1:cyc_data.time_cyc
     sim.W_mot(t) = Wm_c;
     sim.T_mot(t) = Tm_c;
     sim.inst_fuel(t) = fuel;
+    sim.NOx(t) = NOx;
+    sim.CO(t) = CO;
+    sim.HC(t) = HC;
     sim.U3_save(t) = u3_c;
     sim.Pbatt_sim(t) = Pbat_terminal;
     sim.eff_m_sim(t) = eff_m;
@@ -675,7 +686,10 @@ end
 
 sim.T_eng(sim.T_eng<0) = 0;
 delta_SOC = sim.SOC_final(end) - sim.SOC_final(1);
-total_fuel_gram = sum(sim.inst_fuel);
+total_fuel_gram = sum(sim.inst_fuel); % dt is 1 - grams
+emission.NOx = sum(sim.NOx);   % dt is 1 - grams
+emission.HC = sum(sim.HC);
+emission.CO = sum(sim.CO);
 total_distance_mile = sum(cyc_data.cyc_spd)/3600;
 MPG = total_distance_mile/(total_fuel_gram/1000/param.gasoline_density*param.liter2gallon);
 cd ..    % Come out of folder
@@ -720,6 +734,5 @@ else
     fail_outer_Pbatt = 0;
 end
 FAIL = ((fail_outer_Tm + fail_outer_Wm + fail_outer_Te + fail_outer_We + fail_outer_SOC + fail_outer_Pbatt) ~= 0);
-
 
 end

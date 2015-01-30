@@ -9,6 +9,9 @@ vinf.mc_mass = dvar.mc_trq_scale*vinf.mc_mass_orig;
 vinf.eng_consum_trq = dvar.fc_trq_scale*vinf.eng_consum_trq_orig;
 vinf.eng_max_trq = dvar.fc_trq_scale*vinf.eng_max_trq_orig;
 vinf.eng_consum_fuel = dvar.fc_trq_scale*vinf.eng_consum_fuel_orig;
+vinf.fc_hc_map = dvar.fc_trq_scale*vinf.fc_hc_map_orig;
+vinf.fc_co_map = dvar.fc_trq_scale*vinf.fc_co_map_orig;
+vinf.fc_nox_map = dvar.fc_trq_scale*vinf.fc_nox_map_orig;
 vinf.eng_control_trq = [0:5:max(vinf.eng_max_trq),max(vinf.eng_max_trq)]; % If you control it with the given vecotr, you may not need to interpolate!
 vinf.Te_min = repmat(vinf.Te_min_orig,[1 length(vinf.eng_control_trq)])';
 

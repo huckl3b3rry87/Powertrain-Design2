@@ -14,14 +14,12 @@ mkdir(tables)
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
 %Define State Grids
-x1_grid = [0.4:0.005:0.8]';       % SOC
+x1_grid = [0.4:0.001:0.8]';       % SOC
 x1_length = length(x1_grid);
 
 x2_grid = [0 1];   % Engine off (0)   &   Engine on (1)
 x2_length = length(x2_grid);
 
-% x3_grid = [4.484 2.872 1.842 1.414 1.000 0.742];  % [1st 2nd...]             % Gear Level
-% x3_length = length(x3_grid);
 x3_grid = vinf.gear;  % [1st 2nd...]             % Gear Level
 x3_length = length(x3_grid);
 
@@ -301,7 +299,7 @@ cd ..  % Come out of the folder
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
 % Define Parameters
-BETA = 91000;
+BETA = 200000;
 Desired_SOC = 0.55; % When you do the optimization - Extract solutions from the middle
 
 folder = [cyc_data.cyc_name, ' TABLES'];
@@ -382,7 +380,7 @@ cd ..
 
 %%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%--------------------------Simulate Final Runs----------------------------%
+%--------------------------Simulate Final Run-----------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 if RUN_TYPE == 0
     clc
@@ -532,9 +530,9 @@ for t = 1:1:cyc_data.time_cyc
     
     if ENG_state_n == 1;
         fuel = interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.eng_consum_fuel,Te_fuel,We_fuel,'linear')*cyc_data.dt;
-        NOx = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_nox_map,Te_c,We_c,'linear')*cyc_data.dt)';
-        CO = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_co_map,Te_c,We_c,'linear')*cyc_data.dt)';
-        HC = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_hc_map,Te_c,We_c,'linear')*cyc_data.dt)';
+        NOx = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_nox_map,Te_fuel,We_fuel,'linear')*cyc_data.dt)';
+        CO = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_co_map,Te_fuel,We_fuel,'linear')*cyc_data.dt)';
+        HC = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_hc_map,Te_fuel,We_fuel,'linear')*cyc_data.dt)';
     else
         fuel = 0;
         NOx = 0;

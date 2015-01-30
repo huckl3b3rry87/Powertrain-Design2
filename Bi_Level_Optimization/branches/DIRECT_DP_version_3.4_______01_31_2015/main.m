@@ -3,23 +3,20 @@ close all
 clc
 tic 
 
-
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %----------------------------Load All Data--------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
 cd('Components');
 %                              ~~ Engine ~~
-
-Engine_30_kW;
-% Engine_41_kW;
+% Engine_30_kW;
+Engine_41_kW;
 % Engine_50_kW;
 % Engine_73_kW;   
 % Engine_95_kW;
 % Engine_102_kW;
 % Engine_186_kW;
 % Engine_224_kW;
-
 
 %                              ~~ Motor ~~
 % Motor_int;
@@ -35,7 +32,6 @@ Motor_49_kW;
 Battery_ADVISOR;
 
 %                              ~~ Vehicle ~~
-
 % Vehicle_Parameters_4_HI_AV;
 Vehicle_Parameters_4_HI;
 % Vehicle_Parameters_8_HI_AV;
@@ -59,7 +55,7 @@ data;
 e = 1;
 dvar.FD = 4.25*e;
 dvar.G = 1.7*e;
-dvar.fc_trq_scale = 3.16667*e;
+dvar.fc_trq_scale = e;
 dvar.mc_trq_scale = 1*e;
 mc_max_pwr_kW =  dvar.mc_trq_scale*vinf.mc_max_pwr_kW;
 dvar.module_number = ceil(4*mc_max_pwr_kW*1000*Rint_size/(Voc_size^2));
@@ -70,7 +66,7 @@ dvar.module_number = ceil(4*mc_max_pwr_kW*1000*Rint_size/(Voc_size^2));
 Manipulate_Data_Structure;   
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%---------------------Select Drive Cycle-------------------------------------%
+%---------------------Select Drive Cycle----------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %                              ~~ Standard ~~
 
@@ -98,16 +94,20 @@ cyc_name = 'HWFET';
 
 [cyc_data] = Drive_Cycle(param, vinf, cyc_name );
 
-
-% Check Stuff
-% Engine_Plot_Test;
-% eng_spd_best = optimal_eng_spd/param.rpm2rads
-% break
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-----------------Weighing Parameters for DP------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+weight.fuel = 1*1.4776/1.4776;
+weight.NOx = 0*1.4776/0.0560;
+weight.CO = 0*1.4776/0.6835;
+weight.HC = 0*1.4776/0.0177;
+weight.shift = 0.2;
+weight.engine_event = 25; % Is then multiplied by fc_trq_scale
 
 %
 RUN_TYPE = 0;  % RUN_TYPE = 1 - for DIRECT     &    RUN_TYPE = 0 - for DP only
 %%
-[FAIL, MPG, delta_SOC, sim] = Dynamic_Programming_func(param, vinf, dvar, cyc_data, RUN_TYPE);
+[FAIL, MPG, emission, delta_SOC, sim] = Dynamic_Programming_func(param, vinf, dvar, cyc_data, RUN_TYPE, weight);
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-----------------------Final Plots ect.----------------------------------%
@@ -117,10 +117,16 @@ if RUN_TYPE == 0
     cd('Plots')
     Main_Plot;
     Engine_Plot;
+    Engine_NOx_Plot;
+    Engine_HC_Plot;
+    Engine_CO_Plot;
     Motor_Plot;
     %     Cost_Plot;
     Battery_Plot;
     cd ..
-    MPG
+    MPG 
+    delta_SOC
+    emission
     FAIL
+    
 end
