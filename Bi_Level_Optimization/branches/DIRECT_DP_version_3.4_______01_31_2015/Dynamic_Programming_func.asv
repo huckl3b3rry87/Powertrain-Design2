@@ -276,7 +276,10 @@ for t = 1:cyc_data.time_cyc
     
     inst_fuel = repmat(inst_fuel,[1,1,1,1,1,x1_length]); % Add an extra dimension for the fuel table
     inst_fuel = permute(inst_fuel,[6 1 2 3 4 5]);
-
+    
+    if t == 744
+        yyy= 1
+    end
     table_L = inst_fuel + SOC_soft + 10*infeasible_SOC + 200*infeasible_We + 200*infeasible_Tm + 200*infeasible_Wm + 200*infeasible_Te + 200*infeasible_Pbatt;   %[x2]x[u1]x[u2]x[u3]
     
     savename = ['Transitional Cost = ',num2str(t),' Table.mat'];
