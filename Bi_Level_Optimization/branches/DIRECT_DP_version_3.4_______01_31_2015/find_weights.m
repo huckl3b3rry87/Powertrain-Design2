@@ -1,5 +1,4 @@
-clear all
-close all
+function [ FAIL, MPG, emission, delta_SOC ] = find_weights( a1,a2,a3)
 clc
 tic 
 
@@ -109,24 +108,5 @@ RUN_TYPE = 0;  % RUN_TYPE = 1 - for DIRECT     &    RUN_TYPE = 0 - for DP only
 %%
 [FAIL, MPG, emission, delta_SOC, sim] = Dynamic_Programming_func(param, vinf, dvar, cyc_data, RUN_TYPE, weight);
 
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%-----------------------Final Plots ect.----------------------------------%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%%
-if RUN_TYPE == 0
-    cd('Plots')
-    Main_Plot;
-    Engine_Plot;
-    Engine_NOx_Plot;
-    Engine_HC_Plot;
-    Engine_CO_Plot;
-    Motor_Plot;
-    %     Cost_Plot;
-    Battery_Plot;
-    cd ..
-    MPG 
-    delta_SOC
-    emission
-    FAIL
-    
 end
+
