@@ -2,6 +2,7 @@ clear
 clc
 RUN_TYPE.emiss = 1; % RUN_TYPE.emiss = 1 - has emissions  &   RUN_TYPE.emiss = 0 - NO emissions
 %%Make sure this is the same in the function!
+%% eval(['save(''','SOC_grid_001',''',','''result'');'])
 a1 = 0;
 a2 = 0;
 a3 = 0;
