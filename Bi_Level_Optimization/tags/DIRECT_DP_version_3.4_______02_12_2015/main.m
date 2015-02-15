@@ -98,9 +98,9 @@ cyc_name = 'HWFET';
 %-----------------Weighing Parameters for DP------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 weight.fuel = 1*1.4776/1.4776;
-weight.NOx = a1*1.4776/0.0560;
-weight.CO = a2*1.4776/0.6835;
-weight.HC = a3*1.4776/0.0177;
+weight.NOx = 0*1.4776/0.0560;
+weight.CO = 5*1.4776/0.6835;
+weight.HC = 0*1.4776/0.0177;
 weight.shift = 0.2;
 weight.engine_event = 25; % Is then multiplied by fc_trq_scale
 
