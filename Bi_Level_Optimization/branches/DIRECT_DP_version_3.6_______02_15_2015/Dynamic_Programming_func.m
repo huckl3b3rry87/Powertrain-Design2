@@ -14,7 +14,7 @@ mkdir(tables)
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
 %Define State Grids
-soc_size =0.001;
+soc_size =0.005;
 x1_grid = [0.4:soc_size:0.8]';       % SOC
 x1_length = length(x1_grid);
 
@@ -310,7 +310,7 @@ cd ..  % Come out of the folder
 
 % Define Parameters
 BETA = 91000;
-Desired_SOC = 0.55; % When you do the optimization - Extract solutions from the middle
+Desired_SOC = 0.5; % When you do the optimization - Extract solutions from the middle
 
 folder = [cyc_data.cyc_name, ' TABLES'];
 cd(folder);      % Go into the tables that were previously made
@@ -333,8 +333,10 @@ for t = cyc_data.time_cyc:-1:1
                         % Next Gear
                         if u2 == 1 && x3 == 1 || u2 == 3 && x3 == x3_length
                             u2_c = 0; % Cannot Shift
+                            Infeasible_Shift = 200*single(ones(x1_length,1,1,1,1,1));
                         else
                             u2_c = u2_grid(u2);
+                            Infeasible_Shift = single(zeros(x1_length,1,1,1,1,1));
                         end
                         x3_n = x3 + u2_c;
                         
@@ -349,7 +351,7 @@ for t = cyc_data.time_cyc:-1:1
                         x2_n = x2 + u3_c;
                         
                         F  = griddedInterpolant(x1_grid,J_STAR(:,x2_n,x3_n),'linear');  % Penalizing where they land! - Just penalizing the SOC
-                        SOC_State_Penalty(:,x2,x3,u1,u2,u3) = F(table_x1(:,x2,x3,u1,u2,u3));
+                        SOC_State_Penalty(:,x2,x3,u1,u2,u3) = F(table_x1(:,x2,x3,u1,u2,u3)) + Infeasible_Shift;
                     end
                 end
             end
@@ -442,7 +444,7 @@ sim.Pbatt_sim = zeros(1,cyc_data.time_cyc);
 % Define Initial Conditions
 ENG_state_id = 1;               % Engine Off
 ENG_state_c = x2_grid(ENG_state_id);
-SOC_c = 0.55;
+SOC_c = 0.5;
 GEAR_id = 1;                    % Start in First Gear
 
 for t = 1:1:cyc_data.time_cyc
