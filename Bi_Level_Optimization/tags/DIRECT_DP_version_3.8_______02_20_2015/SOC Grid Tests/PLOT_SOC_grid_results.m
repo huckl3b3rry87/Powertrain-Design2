@@ -1,16 +1,19 @@
 clear;clf;
 C = [[1 0 1];[0 1 1];[1 0 0];[0 1 0];[0 0 1]]; % Cell array of colros.
 h = 14;
-for i = 1:4
+r=6;
+for i = 1:5
     
-    if i ==1
-        load SOC_grid_1;
-    elseif i ==2
-        load SOC_grid_01;
-    elseif i ==3
+    if i == 1
+        load SOC_grid_005_interp;
+    elseif i == 2
+        load SOC_grid_001_interp;
+    elseif i == 3
         load SOC_grid_005;
-    else
+    elseif i == 4
         load SOC_grid_001;
+    else
+        load SOC_grid_005_interp_cubic;
     end
     
     
@@ -24,7 +27,7 @@ for i = 1:4
     grid on
     ylabel('MPG')
     xlabel('NOx weights')
-    legend('0.1', '0.01', '0.005','0.001');
+    legend('0.1', '0.01', '0.005','0.001','0.0005');
     hold on
     
     subplot(5,1,2)
@@ -36,7 +39,7 @@ for i = 1:4
     grid on
     ylabel('MPG')
     xlabel('CO weights')
-    legend('0.1', '0.01', '0.005','0.001');
+    legend('0.1', '0.01', '0.005','0.001','0.0005');
     hold on
     
     subplot(5,1,3)
@@ -48,7 +51,7 @@ for i = 1:4
     grid on
     ylabel('MPG')
     xlabel('HC weights')
-    legend('0.1', '0.01', '0.005','0.001');
+    legend('0.1', '0.01', '0.005','0.001','0.0005');
     hold on
     
     subplot(5,1,4)
@@ -60,7 +63,7 @@ for i = 1:4
     grid on
     ylabel('MPG')
     xlabel('SHIFT weights')
-    legend('0.1', '0.01', '0.005','0.001');
+    legend('0.1', '0.01', '0.005','0.001','0.0005');
     hold on
     
     subplot(5,1,5)
@@ -72,7 +75,7 @@ for i = 1:4
     grid on
     ylabel('MPG')
     xlabel('ENG weights')
-    legend('0.1', '0.01', '0.005','0.001');
+    legend('0.1', '0.01', '0.005','0.001','0.0005');
     hold on
 end
 
@@ -80,16 +83,18 @@ hold off
 set(findall(gcf,'type','text'),'FontSize',15,'fontWeight','bold')
 
 %%
-for i = 1:4
+for i = 1:5
     
-    if i ==1
+    if i == 1
         load SOC_grid_1;
-    elseif i ==2
+    elseif i == 2
         load SOC_grid_01;
-    elseif i ==3
+    elseif i == 3
         load SOC_grid_005;
-    else
+    elseif i == 4
         load SOC_grid_001;
+    else
+        load SOC_grid_0005;
     end
     
     
@@ -98,11 +103,11 @@ for i = 1:4
         'LineWidth',0.5,...
         'MarkerEdgeColor','k',...
         'MarkerFaceColor',C(i,:),...
-        'MarkerSize',3)
+        'MarkerSize',r)
     grid on
     ylabel('MPG')
     xlabel('NOx weights')
-    legend('0.1', '0.01', '0.005','0.001');
+    legend('0.1', '0.01', '0.005','0.001','0.0005');
     set(findall(gcf,'type','text'),'FontSize',15,'fontWeight','bold')
     hold on
     
@@ -111,11 +116,11 @@ for i = 1:4
         'LineWidth',0.5,...
         'MarkerEdgeColor','k',...
         'MarkerFaceColor',C(i,:),...
-        'MarkerSize',3)
+        'MarkerSize',r)
     grid on
     ylabel('MPG')
     xlabel('CO weights')
-    legend('0.1', '0.01', '0.005','0.001');
+    legend('0.1', '0.01', '0.005','0.001','0.0005');
     set(findall(gcf,'type','text'),'FontSize',15,'fontWeight','bold')
     hold on
     
@@ -124,11 +129,11 @@ for i = 1:4
         'LineWidth',0.5,...
         'MarkerEdgeColor','k',...
         'MarkerFaceColor',C(i,:),...
-        'MarkerSize',3)
+        'MarkerSize',r)
     grid on
     ylabel('MPG')
     xlabel('HC weights')
-    legend('0.1', '0.01', '0.005','0.001');
+    legend('0.1', '0.01', '0.005','0.001','0.0005');
     set(findall(gcf,'type','text'),'FontSize',15,'fontWeight','bold')
     hold on
     
@@ -137,11 +142,11 @@ for i = 1:4
         'LineWidth',0.5,...
         'MarkerEdgeColor','k',...
         'MarkerFaceColor',C(i,:),...
-        'MarkerSize',3)
+        'MarkerSize',r)
     grid on
     ylabel('MPG')
     xlabel('SHIFT weights')
-    legend('0.1', '0.01', '0.005','0.001');
+    legend('0.1', '0.01', '0.005','0.001','0.0005');
     set(findall(gcf,'type','text'),'FontSize',15,'fontWeight','bold')
     hold on
     
@@ -150,11 +155,11 @@ for i = 1:4
         'LineWidth',0.5,...
         'MarkerEdgeColor','k',...
         'MarkerFaceColor',C(i,:),...
-        'MarkerSize',3)
+        'MarkerSize',r)
     grid on
     ylabel('MPG')
     xlabel('ENG weights')
-    legend('0.1', '0.01', '0.005','0.001');
+    legend('0.1', '0.01', '0.005','0.001','0.0005');
     set(findall(gcf,'type','text'),'FontSize',15,'fontWeight','bold')
     hold on
 end

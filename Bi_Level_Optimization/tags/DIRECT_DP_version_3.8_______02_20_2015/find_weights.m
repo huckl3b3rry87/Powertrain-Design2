@@ -1,8 +1,6 @@
-% clear all
-close all
+function [ FAIL, MPG, emission, delta_SOC ] = find_weights( a1,a2,a3,shift,eng, RUN_TYPE)
 clc
-tic
-
+tic 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %----------------------------Load All Data--------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -98,49 +96,21 @@ cyc_name = 'SHORT_CYC_HWFET';
 %-----------------Define the Run Type-------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 RUN_TYPE.sim = 0;  % RUN_TYPE = 1 - for DIRECT     &    RUN_TYPE = 0 - for DP only
-RUN_TYPE.emiss = 1; % RUN_TYPE.emiss = 1 - has emissions  &   RUN_TYPE.emiss = 0 - NO emissions
+% RUN_TYPE.emiss = 1; % RUN_TYPE.emiss = 1 - has emissions  &   RUN_TYPE.emiss = 0 - NO emissions
 RUN_TYPE.plot = 0;  % RUN_TYPE.plot = 1 - plots on  &   RUN_TYPE.plot = 0 - plots off
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-----------------Weighing Parameters for DP------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 weight.fuel = 1*1.4776/1.4776;  % These are for a specific engine, we need to change this!
 if RUN_TYPE.emiss == 1
-    weight.NOx = 0*1.4776/0.0560;
-    weight.CO = 0*1.4776/0.6835;
-    weight.HC = 0*1.4776/0.0177;
+    weight.NOx = a1*1.4776/0.0560;
+    weight.CO = a2*1.4776/0.6835;
+    weight.HC = a3*1.4776/0.0177;
 end
-weight.shift = 0;
-weight.engine_event = 0; % Is then multiplied by fc_trq_scale
+weight.shift = shift;
+weight.engine_event = eng; % Is then multiplied by fc_trq_scale
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %----------------Simulate-------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 [FAIL, MPG, emission, delta_SOC, sim] = Dynamic_Programming_func(param, vinf, dvar, cyc_data, RUN_TYPE, weight);
-
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%-----------------------Final Plots ect.----------------------------------%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%%
-
-if RUN_TYPE.sim == 0
-    if RUN_TYPE.plot == 1
-        cd('Plots')
-        Main_Plot;
-        Engine_Plot;
-        if RUN_TYPE.emiss == 1
-            Engine_NOx_Plot;
-            Engine_HC_Plot;
-            Engine_CO_Plot;
-        end
-        Motor_Plot;
-        %     Cost_Plot;
-        Battery_Plot;
-        cd ..
-    end
-    MPG
-    delta_SOC
-    if RUN_TYPE.emiss == 1
-        emission
-    end
-    FAIL  
-end
