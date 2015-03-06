@@ -286,7 +286,7 @@ for t = 1:cyc_data.time_cyc
     inst_fuel = repmat(inst_fuel,[1,1,1,1,1,x1_length]); % Add an extra dimension for the fuel table
     inst_fuel = permute(inst_fuel,[6 1 2 3 4 5]);
     
-    table_L = inst_fuel + SOC_soft + 10*infeasible_SOC + 200*infeasible_We + 200*infeasible_Tm + 200*infeasible_Wm + 200*infeasible_Te + 200*infeasible_Pbatt;   %[x2]x[u1]x[u2]x[u3]
+    table_L = inst_fuel + SOC_soft + 10*infeasible_SOC + 20*infeasible_We + 20*infeasible_Tm + 20*infeasible_Wm + 20*infeasible_Te + 20*infeasible_Pbatt;   %[x2]x[u1]x[u2]x[u3]
     
     savename = ['Transitional Cost = ',num2str(t),' Table.mat'];
     save(savename,'table_x1','table_L');
@@ -308,7 +308,7 @@ cd ..  % Come out of the folder
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 
 % Define Parameters
-BETA = 91000;
+BETA = 5000;
 Desired_SOC = 0.5; % When you do the optimization - Extract solutions from the middle
 
 folder = [cyc_data.cyc_name, ' TABLES'];
@@ -332,7 +332,7 @@ for t = cyc_data.time_cyc:-1:1
                         % Next Gear
                         if u2 == 1 && x3 == 1 || u2 == 3 && x3 == x3_length
                             u2_c = 0; % Cannot Shift
-                            Infeasible_Shift = 200*single(ones(x1_length,1,1,1,1,1));
+                            Infeasible_Shift = 20*single(ones(x1_length,1,1,1,1,1));
                         else
                             u2_c = u2_grid(u2);
                             Infeasible_Shift = single(zeros(x1_length,1,1,1,1,1));

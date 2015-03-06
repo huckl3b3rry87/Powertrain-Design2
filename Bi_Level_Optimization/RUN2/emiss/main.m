@@ -71,8 +71,8 @@ Manipulate_Data_Structure;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %%                              ~~ Standard ~~
 
-cyc_name = 'HWFET';
-% cyc_name = 'UDDS';
+% cyc_name = 'HWFET';
+cyc_name = 'UDDS';
 % cyc_name = 'US06';
 % cyc_name = 'SHORT_CYC_HWFET';
 % cyc_name = 'RAMP';

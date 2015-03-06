@@ -32,6 +32,6 @@ MIN_SOC = 0.4;
 MAX_SOC = 0.8;
 
 
-Paux =  700; 
+Paux =  0; 
 
 gear = [4.484 2.872 1.842 1.414 1.000 0.742];  % [1st 2nd...]             % Gear Level
