@@ -362,141 +362,330 @@ sim.J = zeros(1,cyc_data.time_cyc);
 sim.Pbatt_sim = zeros(1,cyc_data.time_cyc);
 
 SOC_c = 0.55;
-GEAR_id = 1;                    % Start in First Gear
+x3 = 1;                    % Start in First Gear
 
 for t = 1:1:cyc_data.time_cyc
     
+%     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%     %------------- Load & Determine all Control Signals --------------%
+%     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%     load(['Cost & Control = ',num2str(t),' TABLE.mat']);
+%     
+%     % Engine Torque Control
+%     trq_lookup_u1 = interp1(x1_grid,opt_trq(:,GEAR_id),SOC_c,'linear');
+%     
+%     % Shifting Control
+%     id_lookup_u2 = interp1(x1_grid,opt_id_u2(:,GEAR_id),SOC_c,'nearest');  %Use index extraction!!
+%     u2_c = u2_grid(id_lookup_u2);
+%     
+%     if u2_c == 0; SHIFT_event = 0; else SHIFT_event = 1; end
+%     
+%     sim.J(t) =  interp1(x1_grid,J_STAR(:,GEAR_id),SOC_c,'linear');  % No longer correct!
+%     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%     
+%     % Shifting Control Check
+%     if (GEAR_id == 1 && u2_c == u2_grid(1)) || (GEAR_id == x3_length && u2_c == u2_grid(u2_length))
+%         u2_c = 0;             % Do nothing -Maybe remove this later and penalize or something, !!also should fail it!!!
+%         FAIL_Shift = 1;
+%     else
+%         FAIL_Shift = 0;
+%     end
+%     
+%     % Update x3 and define new gear id
+%     New_Gear_Index = GEAR_id + u2_c;
+%     GEAR_n = x3_grid(New_Gear_Index);
+%     
+%     We_c = cyc_data.Ww(t)*dvar.FD*GEAR_n;                % [rad/sec]
+%     Te_c =  trq_lookup_u1;
+%     Te_drive =  trq_lookup_u1;
+%     Wm_c = cyc_data.Ww(t)*dvar.FD*dvar.G;              % [rad/sec]
+%     
+%     Tm_c = cyc_data.Tw(t)/(dvar.FD*dvar.G) - Te_drive*GEAR_n/dvar.G;  % [1]x[1]
+%     
+%     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%     %----- Check prime movers & Saturate For Fuel & Eff. Tables ------%
+%     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%     %                         ~Engine Speed~
+%     if We_c > vinf.W_eng_max
+%         We_fuel = vinf.W_eng_max;
+%         Fail_We = 1;
+%     elseif We_c < vinf.W_eng_min
+%         We_fuel = vinf.W_eng_min;
+%         if We_c < 550*param.rpm2rads &&  trq_lookup_u1 > 0.05 % Engine is on
+%             Fail_We = 1;
+%         else
+%             Fail_We = 0;  % Don't fail it if the engine is off
+%         end
+%     else
+%         We_fuel = We_c;
+%         Fail_We = 0;
+%     end
+%     
+%     Te_max = interp1(vinf.eng_consum_spd_old,vinf.eng_max_trq,We_fuel);
+%     %                         ~Engine Torque~
+%     if Te_c > Te_max
+%         Te_fuel = Te_max;
+%         Fail_Te = 1;
+%         
+%     else
+%         Te_fuel = Te_c;
+%         Fail_Te = 0;
+%     end
+%     
+%     fuel = interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.eng_consum_fuel,Te_fuel,We_fuel,'linear')*cyc_data.dt;
+%     if RUN_TYPE.emiss == 1
+%         NOx = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_nox_map,Te_fuel,We_fuel,'linear')*cyc_data.dt)';
+%         CO = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_co_map,Te_fuel,We_fuel,'linear')*cyc_data.dt)';
+%         HC = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_hc_map,Te_fuel,We_fuel,'linear')*cyc_data.dt)';
+%     end
+%     
+%     %                          ~Motor Speed~
+%     if Wm_c > vinf.Wm_max
+%         Wm_eff = vinf.Wm_max;
+%         Fail_Wm = 1;
+%     elseif Wm_c < vinf.Wm_min
+%         Wm_eff = vinf.Wm_min;
+%         Fail_Wm = 1;
+%     else
+%         Wm_eff = Wm_c;
+%         Fail_Wm = 0;
+%     end
+%     
+%     Tm_max = interp1(vinf.m_map_spd,vinf.m_max_trq,Wm_eff);
+%     %                          ~Motor Torque~
+%     if Tm_c > Tm_max
+%         Tm_eff = Tm_max;
+%         Fail_Tm = 1;
+%     elseif Tm_c < -Tm_max
+%         Tm_eff = -Tm_max;
+%         Fail_Tm = 0;    % Can use the brake
+%     else
+%         Tm_eff = Tm_c;
+%         Fail_Tm = 0;
+%     end
+%     eff_m = interp2(vinf.m_map_trq, vinf.m_map_spd, vinf.m_eff_map, Tm_eff, abs(Wm_eff)); % Assume eff. table is symetric
+%     eff_m(isnan(eff_m)) = 0.2;
+    
+%     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%     %------------- Calculate New SOC & Check New SOC------------------%
+%     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%     
+%     if Tm_c <= 0
+%         Pbat = (Wm_c*Tm_c)*(eff_m*vinf.ess_coulombic_eff);
+%     else
+%         Pbat = (Wm_c*Tm_c)/(eff_m*vinf.ess_coulombic_eff);
+%     end
+%     
+%     Pbat_terminal = Pbat;
+%     
+%     
+%     if Pbat_terminal >= 0
+%         Pbatt_max = interp1(vinf.ess_soc, vinf.ess_max_pwr_dis,SOC_c);
+%         if Pbat_terminal > Pbatt_max
+%             FAIL_Pbatt = 1;
+%             Pbat_terminal = Pbatt_max;  % Saturate it
+%         else
+%             FAIL_Pbatt = 0;
+%         end
+%         rint_c = interp1(vinf.ess_soc,vinf.ess_r_dis,SOC_c);
+%     else
+%         Pbatt_min = -interp1(vinf.ess_soc, vinf.ess_max_pwr_chg,SOC_c);
+%         FAIL_Pbatt = 0;      % Brakes will handle the rest of the power
+%         Pbat_terminal(Pbat_terminal < Pbatt_min) = Pbatt_min;
+%         rint_c = interp1(vinf.ess_soc,vinf.ess_r_chg,SOC_c);
+%     end
+%     Voc_c = interp1(vinf.ess_soc,vinf.ess_voc,SOC_c);
+%     i(t) = (Voc_c-(Voc_c^2-4*Pbat_terminal*rint_c)^(1/2))/(2*rint_c); % Picked the smaller current (-)
+%     SOC_n = SOC_c - i(t)/(vinf.ess_cap_ah*3600)*cyc_data.dt;
+    
+%     % Check new SOC
+%     if SOC_n > param.MAX_SOC
+%         SOC_n = param.MAX_SOC;
+%         Fail_SOC = 1;
+%     elseif SOC_n < param.MIN_SOC
+%         SOC_n = param.MIN_SOC;
+%         Fail_SOC = 1;
+%     else
+%         Fail_SOC = 0;
+%     end
+%     
+%     % Save the opperational feasiblilty results
+%     fail_inner_SOC(t) = Fail_SOC;
+%     fail_inner_Te(t) = Fail_Te;
+%     fail_inner_We(t) = Fail_We;
+%     fail_inner_Tm(t) = Fail_Tm;
+%     fail_inner_Wm(t) = Fail_Wm;
+%     fail_inner_Pbatt(t) = FAIL_Pbatt;
+%     fail_inner_Shift(t) = FAIL_Shift;
+%     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%     %---------------------- Update the States-------------------------%
+%     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%     % Update x1 for next time step
+%     SOC_c = SOC_n;
+%     GEAR_id = find(GEAR_n == x3_grid);
+%     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%     
+%     % Save Simulation Variables
+%     sim.SOC_final(t) = SOC_c;
+%     sim.GEAR(t) = GEAR_id;
+%     sim.GEAR_save(t) = GEAR_n; % Actual gear ratio
+%     sim.W_eng(t) = We_c;
+%     sim.T_eng(t) = Te_c;
+%     sim.W_mot(t) = Wm_c;
+%     sim.T_mot(t) = Tm_c;
+%     sim.inst_fuel(t) = fuel;
+%     sim.SHIFT_Event(t) = SHIFT_event;
+%     
+%     if RUN_TYPE.emiss == 1
+%         sim.NOx(t) = NOx;
+%         sim.CO(t) = CO;
+%         sim.HC(t) = HC;
+%     end
+%     sim.Pbatt_sim(t) = Pbat_terminal;
+%     sim.eff_m_sim(t) = eff_m;
+%     
+%     % Plot the control signal indicies
+%     sim.U1_sim(t)  =  trq_lookup_u1;
+%     sim.U2_sim(t)  = id_lookup_u2;
+    
+    %  COPIED
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
     %------------- Load & Determine all Control Signals --------------%
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
     load(['Cost & Control = ',num2str(t),' TABLE.mat']);
     
     % Engine Torque Control
-    trq_lookup_u1 = interp1(x1_grid,opt_trq(:,GEAR_id),SOC_c,'linear');
+    Te_c = interp1(x1_grid,opt_trq(:,x3),SOC_c,'linear');
     
     % Shifting Control
-    id_lookup_u2 = interp1(x1_grid,opt_id_u2(:,GEAR_id),SOC_c,'nearest');  %Use index extraction!!
+    id_lookup_u2 = interp1(x1_grid,opt_id_u2(:,x3),SOC_c,'nearest');  %Use index extraction!!
     u2_c = u2_grid(id_lookup_u2);
     
-    if u2_c == 0; SHIFT_event = 0; else SHIFT_event = 1; end
     
-    sim.J(t) =  interp1(x1_grid,J_STAR(:,GEAR_id),SOC_c,'linear');  % No longer correct!
+        if u2_c == 0; SHIFT_event = 0; else SHIFT_event = 1; end
+    
+    sim.J(t) =  interp1(x1_grid,J_STAR(:,x3),SOC_c,'linear');  % No longer correct!
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
     
     % Shifting Control Check
-    if (GEAR_id == 1 && u2_c == u2_grid(1)) || (GEAR_id == x3_length && u2_c == u2_grid(u2_length))
-        u2_c = 0;             % Do nothing -Maybe remove this later and penalize or something, !!also should fail it!!!
+    if (x3 == 1 && u2_c == u2_grid(1)) || (x3 == x3_length && u2_c == u2_grid(u2_length))
+%         u2_c = 0;             % Do nothing -Maybe remove this later and penalize or something, !!also should fail it!!!
         FAIL_Shift = 1;
     else
         FAIL_Shift = 0;
     end
-    
-    % Update x3 and define new gear id
-    New_Gear_Index = GEAR_id + u2_c;
-    GEAR_n = x3_grid(New_Gear_Index);
-    
-    We_c = cyc_data.Ww(t)*dvar.FD*GEAR_n;                % [rad/sec]
-    Te_c =  trq_lookup_u1;
-    Te_drive =  trq_lookup_u1;
-    Wm_c = cyc_data.Ww(t)*dvar.FD*dvar.G;              % [rad/sec]
-    
-    Tm_c = cyc_data.Tw(t)/(dvar.FD*dvar.G) - Te_drive*GEAR_n/dvar.G;  % [1]x[1]
 
-    %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-    %----- Check prime movers & Saturate For Fuel & Eff. Tables ------%
-    %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-    %                         ~Engine Speed~
-    if We_c > vinf.W_eng_max
-        We_fuel = vinf.W_eng_max;
+    % Update x3 and Define New Gear ID
+    New_Gear_Index = x3 + u2_c;
+    x3_n = x3_grid(New_Gear_Index);
+    %
+    We_c = cyc_data.Ww(t)*dvar.FD*x3_n;                % [rad/sec]
+    Te_drive = Te_c;
+    Wm_c = cyc_data.Ww(t)*dvar.FD*dvar.G;              % [rad/sec]
+    Tm_c = cyc_data.Tw(t)/(dvar.FD*dvar.G)*ones(size(Te_c)) - Te_drive*x3_n/dvar.G;  % [u1]x[1]
+    
+    if We_c < vinf.W_eng_min
         Fail_We = 1;
-    elseif We_c < vinf.W_eng_min
         We_fuel = vinf.W_eng_min;
-        if We_c < 550*param.rpm2rads &&  trq_lookup_u1 > 0.05 % Engine is on
-            Fail_We = 1;
-        else
-            Fail_We = 0;  % Don't fail it if the engine is off
-        end
+    elseif We_c > vinf.W_eng_max
+        Fail_We = 1;
+        We_fuel = vinf.W_eng_max;
     else
-        We_fuel = We_c;
         Fail_We = 0;
+        We_fuel = We_c;
     end
+    %
+    Te_max =  interp1(vinf.eng_consum_spd_old,vinf.eng_max_trq,We_fuel); % Canged tp the saturated value
     
-    Te_max = interp1(vinf.eng_consum_spd_old,vinf.eng_max_trq,We_fuel);
-    %                         ~Engine Torque~
-    if Te_c > Te_max
-        Te_fuel = Te_max;
+    if Te_c > Te_max;
         Fail_Te = 1;
-        
+        Te_fuel = Te_max;
     else
-        Te_fuel = Te_c;
         Fail_Te = 0;
+        Te_fuel = Te_c;
     end
-    
-    fuel = interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.eng_consum_fuel,Te_fuel,We_fuel,'linear')*cyc_data.dt;
+    fuel = (interp2(vinf.eng_consum_trq',vinf.eng_consum_spd,vinf.eng_consum_fuel,Te_fuel,We_fuel,'linear')*cyc_data.dt)'; % sould modify maps near zero!!
     if RUN_TYPE.emiss == 1
         NOx = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_nox_map,Te_fuel,We_fuel,'linear')*cyc_data.dt)';
         CO = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_co_map,Te_fuel,We_fuel,'linear')*cyc_data.dt)';
         HC = (interp2(vinf.eng_consum_trq,vinf.eng_consum_spd,vinf.fc_hc_map,Te_fuel,We_fuel,'linear')*cyc_data.dt)';
     end
     
-    %                          ~Motor Speed~
-    if Wm_c > vinf.Wm_max
-        Wm_eff = vinf.Wm_max;
-        Fail_Wm = 1;
-    elseif Wm_c < vinf.Wm_min
-        Wm_eff = vinf.Wm_min;
-        Fail_Wm = 1;
-    else
-        Wm_eff = Wm_c;
-        Fail_Wm = 0;
-    end
-    
-    Tm_max = interp1(vinf.m_map_spd,vinf.m_max_trq,Wm_eff);
-    %                          ~Motor Torque~
-    if Tm_c > Tm_max
-        Tm_eff = Tm_max;
+    %             % Update x1
+    % Saturate the motor for the efficiency lookup table
+    % Check Motor
+    Tm_max= interp1(vinf.m_map_spd,vinf.m_max_trq,Wm_c);
+    if Tm_c > Tm_max;
         Fail_Tm = 1;
-    elseif Tm_c < -Tm_max
+        Tm_eff = Tm_max;
+    elseif Tm_c < -Tm_max;
+        Fail_Tm = 1;
         Tm_eff = -Tm_max;
-        Fail_Tm = 0;    % Can use the brake
     else
-        Tm_eff = Tm_c;
         Fail_Tm = 0;
+        Tm_eff = Tm_c;
     end
-    eff_m = interp2(vinf.m_map_trq, vinf.m_map_spd, vinf.m_eff_map, Tm_eff, abs(Wm_eff)); % Assume eff. table is symetric
-    eff_m(isnan(eff_m)) = 0.2;
     
-    %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-    %------------- Calculate New SOC & Check New SOC------------------%
-    %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-    
-    if Tm_c <= 0
-        Pbat = (Wm_c*Tm_c)*(eff_m*vinf.ess_coulombic_eff);
+    if Wm_c > vinf.Wm_max
+        Fail_Wm = 1;
+        Wm_eff = vinf.Wm_max;
+    elseif Wm_c < vinf.Wm_min
+        Fail_Wm = 1;
+        Wm_eff = vinf.Wm_min;
     else
-        Pbat = (Wm_c*Tm_c)/(eff_m*vinf.ess_coulombic_eff);
+        Fail_Wm = 0;
+        Wm_eff = Wm_c;
     end
     
-    Pbat_terminal = Pbat;
+    eff_m = interp2(vinf.m_map_trq, vinf.m_map_spd, vinf.m_eff_map, Tm_eff, abs(Wm_eff))';
     
+    if isnan(eff_m)
+        eff_m = 0.2;
+    end
     
-    if Pbat_terminal >= 0
-        Pbatt_max = interp1(vinf.ess_soc, vinf.ess_max_pwr_dis,SOC_c);
-        if Pbat_terminal > Pbatt_max
-            FAIL_Pbatt = 1;
-            Pbat_terminal = Pbatt_max;  % Saturate it
-        else
-            FAIL_Pbatt = 0;
-        end
-        rint_c = interp1(vinf.ess_soc,vinf.ess_r_dis,SOC_c);
+    % for now use saturated values of motor torque and engine torque, but
+    % this is not correct- needs to be fixed in step 1
+    Pbat_charge = (Wm_eff*Tm_eff).*(eff_m*vinf.ess_coulombic_eff);    % Tm_c < 0              % IN the DP code, you are using the saturated values for motor and torque... is this correct? 
+    Pbat_discharge = (Wm_eff*Tm_eff)./(eff_m*vinf.ess_coulombic_eff); % Battery needs to supply more power!!
+    
+%     Pbat = Pbat_discharge;
+%     Pbat(Tm_c < 0) = Pbat_charge(Tm_c < 0);  % again should not be saturated one here!!
+    if Tm_eff < 0;
+        Pbat = Pbat_charge;
     else
-        Pbatt_min = -interp1(vinf.ess_soc, vinf.ess_max_pwr_chg,SOC_c);
-        FAIL_Pbatt = 0;      % Brakes will handle the rest of the power
-        Pbat_terminal(Pbat_terminal < Pbatt_min) = Pbatt_min;
-        rint_c = interp1(vinf.ess_soc,vinf.ess_r_chg,SOC_c);
+        Pbat = Pbat_discharge;
     end
+
+    
+    % Discharge
+    Pbatt_max = interp1(vinf.ess_soc, vinf.ess_max_pwr_dis, SOC_c);
+    rint_discharge = interp1(vinf.ess_soc,vinf.ess_r_dis,SOC_c);
+    
+    % Charge
+    Pbatt_min = -interp1(vinf.ess_soc, vinf.ess_max_pwr_chg,SOC_c);
+    rint_charge = interp1(vinf.ess_soc,vinf.ess_r_chg,SOC_c);
+    
+    % Saturate the Battery
+    if Pbat > Pbatt_max
+        FAIL_Pbatt = 1;
+        Pbat_eff = Pbatt_max;
+    elseif Pbat < Pbatt_min
+        FAIL_Pbatt = 1;
+        Pbat_eff = Pbatt_min;
+    else
+        FAIL_Pbatt = 0;
+        Pbat_eff = Pbat;
+    end
+    
+    % Charge & Discharge Resistances
+    if Pbat > 0
+        rint_c = rint_discharge;
+    else
+        rint_c = rint_charge;
+    end
+    
     Voc_c = interp1(vinf.ess_soc,vinf.ess_voc,SOC_c);
-    i(t) = (Voc_c-(Voc_c^2-4*Pbat_terminal*rint_c)^(1/2))/(2*rint_c); % Picked the smaller current (-)
-    SOC_n = SOC_c - i(t)/(vinf.ess_cap_ah*3600)*cyc_data.dt;
+    SOC_n =  SOC_c -(Voc_c -(Voc_c.^2 -4*Pbat_eff.*rint_c).^(1/2))./(2*rint_c*vinf.ess_cap_ah*3600)*cyc_data.dt;
     
     % Check new SOC
     if SOC_n > param.MAX_SOC
@@ -522,13 +711,13 @@ for t = 1:1:cyc_data.time_cyc
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
     % Update x1 for next time step
     SOC_c = SOC_n;
-    GEAR_id = find(GEAR_n == x3_grid);
+    x3 = find(x3_n == x3_grid);
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
     
     % Save Simulation Variables
     sim.SOC_final(t) = SOC_c;
-    sim.GEAR(t) = GEAR_id;
-    sim.GEAR_save(t) = GEAR_n; % Actual gear ratio
+    sim.GEAR(t) = x3;
+    sim.GEAR_save(t) = x3_n; % Actual gear ratio
     sim.W_eng(t) = We_c;
     sim.T_eng(t) = Te_c;
     sim.W_mot(t) = Wm_c;
@@ -541,11 +730,11 @@ for t = 1:1:cyc_data.time_cyc
         sim.CO(t) = CO;
         sim.HC(t) = HC;
     end
-    sim.Pbatt_sim(t) = Pbat_terminal;
+    sim.Pbatt_sim(t) = Pbat_eff;
     sim.eff_m_sim(t) = eff_m;
     
     % Plot the control signal indicies
-    sim.U1_sim(t)  =  trq_lookup_u1;
+    sim.U1_sim(t)  =  Tm_c;
     sim.U2_sim(t)  = id_lookup_u2;
     
 end

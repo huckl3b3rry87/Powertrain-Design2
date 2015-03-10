@@ -71,10 +71,10 @@ Manipulate_Data_Structure;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %%                              ~~ Standard ~~
 
-% cyc_name = 'HWFET';
+cyc_name = 'HWFET';
 % cyc_name = 'UDDS';
 % cyc_name = 'US06';
-cyc_name = 'SHORT_CYC_HWFET';
+% cyc_name = 'SHORT_CYC_HWFET';
 % cyc_name = 'RAMP';
 % cyc_name = 'LA92';
 % cyc_name = 'CONST_65';
@@ -107,12 +107,15 @@ RUN_TYPE.soc_size = 0.005;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 weight.fuel = 1*1.4776/1.4776;  % These are for a specific engine, we need to change this!
 if RUN_TYPE.emiss == 1
-    weight.NOx = 0*1.4776/0.0560;
-    weight.CO = 0*1.4776/0.6835;
-    weight.HC = 0*1.4776/0.0177;
+%     weight.NOx = 0*1.4776/0.0560;
+%     weight.CO = 0*1.4776/0.6835;
+%     weight.HC = 0*1.4776/0.0177;
+    weight.NOx = 0.1*1.4776/0.0560;
+    weight.CO = 0.6*1.4776/0.6835;
+    weight.HC = 0.3*1.4776/0.0177;
 end
 weight.shift = 0.3;
-weight.engine_event = 10; % Is then multiplied by fc_trq_scale
+% weight.engine_event = 10; % Is then multiplied by fc_trq_scale
 weight.infeasible = 100;
 weight.CS = 91000;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -136,7 +139,7 @@ if RUN_TYPE.sim == 0
             Engine_CO_Plot;
         end
         Motor_Plot;
-        %     Cost_Plot;
+        Cost_Plot;
         Battery_Plot;
         cd ..
     end
@@ -145,5 +148,5 @@ if RUN_TYPE.sim == 0
     if RUN_TYPE.emiss == 1
         emission
     end
-    FAIL  
+    FAIL.final  
 end

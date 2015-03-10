@@ -599,10 +599,10 @@ for t = 1:1:cyc_data.time_cyc
     %------------- Calculate New SOC & Check New SOC------------------%
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
     
-    if Tm_c <= 0
-        Pbat = (Wm_c*Tm_c)*(eff_m*vinf.ess_coulombic_eff);
+    if Tm_eff <= 0
+        Pbat = (Wm_eff*Tm_eff)*(eff_m*vinf.ess_coulombic_eff);
     else
-        Pbat = (Wm_c*Tm_c)/(eff_m*vinf.ess_coulombic_eff);
+        Pbat = (Wm_eff*Tm_eff)/(eff_m*vinf.ess_coulombic_eff);
     end
     
     if ENG_state_n == 0;
