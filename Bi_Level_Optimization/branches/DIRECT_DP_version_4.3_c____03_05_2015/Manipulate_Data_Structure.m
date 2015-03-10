@@ -12,7 +12,7 @@ vinf.eng_consum_fuel = dvar.fc_trq_scale*vinf.eng_consum_fuel_orig;
 vinf.fc_hc_map = dvar.fc_trq_scale*vinf.fc_hc_map_orig;
 vinf.fc_co_map = dvar.fc_trq_scale*vinf.fc_co_map_orig;
 vinf.fc_nox_map = dvar.fc_trq_scale*vinf.fc_nox_map_orig;
-vinf.eng_control_trq = [0:0.01:max(vinf.eng_max_trq),max(vinf.eng_max_trq)]; % If you control it with the given vecotr, you may not need to interpolate!
+vinf.eng_control_trq = [0:RUN_TYPE.trq_size:max(vinf.eng_max_trq),max(vinf.eng_max_trq)]; % If you control it with the given vecotr, you may not need to interpolate!
 vinf.Te_min = repmat(vinf.Te_min_orig,[1 length(vinf.eng_control_trq)])';
 
 fc_max_pwr=(max(vinf.eng_consum_spd_old.*vinf.eng_max_trq)/1000); % kW     peak engine power

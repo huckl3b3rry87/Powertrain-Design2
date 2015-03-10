@@ -315,7 +315,7 @@ folder = [cyc_data.cyc_name, ' TABLES'];
 cd(folder);      % Go into the tables that were previously made
 
 J_STAR = repmat(BETA*(x1_grid - Desired_SOC).^2, [1, x2_length,x3_length]); % terminal state penalty, [x1]x[x2]
-J_STAR(J_STAR~=0) = J_STAR(J_STAR~=0) + 100;
+J_STAR(J_STAR~=0) = J_STAR(J_STAR~=0) + weight.SOC_final;
 
 
 for t = cyc_data.time_cyc:-1:1
@@ -599,10 +599,10 @@ for t = 1:1:cyc_data.time_cyc
     %------------- Calculate New SOC & Check New SOC------------------%
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
     
-    if Tm_eff <= 0
-        Pbat = (Wm_eff*Tm_eff)*(eff_m*vinf.ess_coulombic_eff);
+    if Tm_c <= 0
+        Pbat = (Wm_c*Tm_c)*(eff_m*vinf.ess_coulombic_eff);
     else
-        Pbat = (Wm_eff*Tm_eff)/(eff_m*vinf.ess_coulombic_eff);
+        Pbat = (Wm_c*Tm_c)/(eff_m*vinf.ess_coulombic_eff);
     end
     
     if ENG_state_n == 0;
@@ -739,51 +739,51 @@ cd ..    % Come out of folder
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %SOC
 if any(any(fail_inner_SOC))
-    fail_outer_SOC = 1;
+    FAIL.fail_outer_SOC = 1;
 else
-    fail_outer_SOC = 0;
+    FAIL.fail_outer_SOC = 0;
 end
 if abs(delta_SOC) > RUN_TYPE.soc_size
-    fail_dSOC = 1;
+    FAIL.fail_dSOC = 1;
 else
-    fail_dSOC = 0;
+    FAIL.fail_dSOC = 0;
 end
 %We
 if any(any(fail_inner_We))
-    fail_outer_We = 1;
+    FAIL.fail_outer_We = 1;
 else
-    fail_outer_We = 0;
+    FAIL.fail_outer_We = 0;
 end
 %Te
 if any(any(fail_inner_Te))
-    fail_outer_Te = 1;
+    FAIL.fail_outer_Te = 1;
 else
-    fail_outer_Te = 0;
+    FAIL.fail_outer_Te = 0;
 end
 %Wm
 if any(any(fail_inner_Wm))
-    fail_outer_Wm = 1;
+    FAIL.fail_outer_Wm = 1;
 else
-    fail_outer_Wm = 0;
+    FAIL.fail_outer_Wm = 0;
 end
 %Tm
 if any(any(fail_inner_Tm))
-    fail_outer_Tm = 1;
+    FAIL.fail_outer_Tm = 1;
 else
-    fail_outer_Tm = 0;
+    FAIL.fail_outer_Tm = 0;
 end
 %Pbatt
 if any(any(fail_inner_Pbatt))
-    fail_outer_Pbatt = 1;
+    FAIL.fail_outer_Pbatt = 1;
 else
-    fail_outer_Pbatt = 0;
+    FAIL.fail_outer_Pbatt = 0;
 end
 %Shift
 if any(any(fail_inner_Shift))
-    fail_outer_Shift = 1;
+    FAIL.fail_outer_Shift = 1;
 else
-    fail_outer_Shift = 0;
+    FAIL.fail_outer_Shift = 0;
 end
-FAIL = ((fail_outer_Tm + fail_outer_Wm + fail_outer_Te + fail_outer_We + fail_outer_SOC + fail_dSOC + fail_outer_Pbatt + fail_outer_Shift) ~= 0);
+FAIL.final = ((FAIL.fail_outer_Tm + FAIL.fail_outer_Wm + FAIL.fail_outer_Te + FAIL.fail_outer_We + FAIL.fail_outer_SOC + FAIL.fail_dSOC + FAIL.fail_outer_Pbatt + FAIL.fail_outer_Shift) ~= 0);
 
 end
