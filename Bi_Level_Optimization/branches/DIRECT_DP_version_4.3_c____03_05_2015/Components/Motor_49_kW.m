@@ -106,7 +106,7 @@ m_max_gen_trq = mc_max_gen_trq;
 
 m_eff_map = mc_eff_map;
 
-Wm_min = -max(mc_map_spd);
+Wm_min = mc_map_spd(1);           
 Wm_max =  max(mc_map_spd);
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 % Define all Variables for DP

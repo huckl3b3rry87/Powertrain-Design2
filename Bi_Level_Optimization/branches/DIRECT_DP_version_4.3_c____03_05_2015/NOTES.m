@@ -1,3 +1,6 @@
 % New for this Release
 
-In this code, step 1 was copied into step three for the 2 state s control code
+
+changed mc_min to zero instead of -max(mc_map_spd)
+
+implementing engine state
