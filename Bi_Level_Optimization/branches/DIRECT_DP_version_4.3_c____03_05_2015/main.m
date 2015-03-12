@@ -72,7 +72,6 @@ dvar.module_number = 31;
 %---------------------Update the Data-------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 Manipulate_Data_Structure;
-
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %---------------------Select Drive Cycle----------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -115,7 +114,7 @@ if RUN_TYPE.emiss == 1
     weight.HC = 0.3*1.4776/0.0177;
 end
 weight.shift = 0.3;
-weight.engine_event = 10; % Colud be multiplied by fc_trq_scale
+weight.engine_event = 200; 
 weight.infeasible = 100;
 weight.CS = 91000;
 weight.SOC_final = 200;

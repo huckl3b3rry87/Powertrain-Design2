@@ -9,7 +9,7 @@ RUN_TYPE.sim = 0;  % RUN_TYPE = 1 - for DIRECT     &    RUN_TYPE = 0 - for DP on
 RUN_TYPE.emiss = 1; % RUN_TYPE.emiss = 1 - has emissions  &   RUN_TYPE.emiss = 0 - NO emissions
 RUN_TYPE.plot = 1;  % RUN_TYPE.plot = 1 - plots on  &   RUN_TYPE.plot = 0 - plots off
 RUN_TYPE.soc_size = 0.005;
-RUN_TYPE.trq_size = 1;  % Nm
+RUN_TYPE.trq_size = 5;  % Nm
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %----------------------------Load All Data--------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -78,10 +78,10 @@ Manipulate_Data_Structure;
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %%                              ~~ Standard ~~
 
-% cyc_name = 'HWFET';
+cyc_name = 'HWFET';
 % cyc_name = 'UDDS';
 % cyc_name = 'US06';
-cyc_name = 'SHORT_CYC_HWFET';
+% cyc_name = 'SHORT_CYC_HWFET';
 % cyc_name = 'RAMP';
 % cyc_name = 'LA92';
 % cyc_name = 'CONST_65';
@@ -112,7 +112,7 @@ if RUN_TYPE.emiss == 1
     weight.HC = 0.3*1.4776/0.0177;
 end
 weight.shift = 0.3;
-weight.engine_event = 10; % Is then multiplied by fc_trq_scale
+weight.engine_event = 0; % Is then multiplied by fc_trq_scale
 weight.infeasible = 100;
 weight.CS = 9100;
 weight.SOC_final = 100;

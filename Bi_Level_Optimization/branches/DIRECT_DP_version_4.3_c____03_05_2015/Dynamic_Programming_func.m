@@ -80,7 +80,7 @@ for t = 1:cyc_data.time_cyc
                 ENG_state_c = x2_grid(x2);
                 
                 if  ENG_state_c == 0 
-                    Eng_Penalty = [weight.engine_event; zeros((length(u1_grid)-1),1)];  % [u1}x[1]
+                    Eng_Penalty = [0; weight.engine_event*ones((length(u1_grid)-1),1)];  % [u1}x[1]
                 else
                     Eng_Penalty = zeros(size(u1_grid));   % [u1}x[1]
                 end
@@ -556,12 +556,19 @@ for t = 1:1:cyc_data.time_cyc
     % Update x1 for next time step
     SOC_c = SOC_n;
     x3 = find(x3_n == x3_grid);
+    % Update engine state for simulation
+    if  Te_c == 0
+        ENG_state_c = 0;
+    else
+        ENG_state_c = 1;
+    end
     %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
     
     % Save Simulation Variables
     sim.SOC_final(t) = SOC_c;
     sim.GEAR(t) = x3;
     sim.GEAR_save(t) = x3_n; % Actual gear ratio
+    sim.ENG_state(t) = ENG_state_c;
     sim.W_eng(t) = We_c;
     sim.T_eng(t) = Te_c;
     sim.W_mot(t) = Wm_c;

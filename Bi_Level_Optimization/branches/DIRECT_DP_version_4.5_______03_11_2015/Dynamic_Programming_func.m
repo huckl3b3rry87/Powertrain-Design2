@@ -688,7 +688,7 @@ for t = 1:1:cyc_data.time_cyc
     
     % Save Simulation Variables
     sim.SOC_final(t) = SOC_c;
-    sim.ENG_state(t) = ENG_state_c;
+%     sim.ENG_state(t) = ENG_state_c;
     sim.GEAR(t) = GEAR_id;
     sim.GEAR_save(t) = GEAR_n; % Actual gear ratio
     sim.W_eng(t) = We_c;
