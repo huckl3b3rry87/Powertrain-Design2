@@ -1,14 +1,20 @@
 clear
 clc
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-----------------Define the Run Type-------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+RUN_TYPE.sim = 0;  % RUN_TYPE = 1 - for DIRECT     &    RUN_TYPE = 0 - for DP only
 RUN_TYPE.emiss = 1; % RUN_TYPE.emiss = 1 - has emissions  &   RUN_TYPE.emiss = 0 - NO emissions
+RUN_TYPE.plot = 1;  % RUN_TYPE.plot = 1 - plots on  &   RUN_TYPE.plot = 0 - plots off
 RUN_TYPE.soc_size = 0.005;
+RUN_TYPE.trq_size = 5;  % Nm
 %%Make sure this is the same in the function!
 %% eval(['save(''','SOC_grid_005_interp_smooth',''',','''result'');'])
 a1 = 0;
 a2 = 0;
 a3 = 0;
-shift =0;
-eng = 0;
+shift = 0;
+eng =  0;
 
 beta = 20;
 alpha = 20;
