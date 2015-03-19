@@ -8,19 +8,19 @@ t = 10;
 q = 12;  % For colors
 start = 1;
 stop = 10;
-for i = [start,2,3,4,5];
+for i = [start,2,3,4];
     if i == 1
-        load SOC_grid_1_trq_1_Nm_HWFET;
-        c = 'SOC grid size = 0.1';
-    elseif i == 2
-        load SOC_grid_05_trq_1_Nm_HWFET;
+        load SOC_grid_05_trq_1_NM_HWFET;
         c = 'SOC grid size = 0.05';
-    elseif i == 3
-        load SOC_grid_01_trq_1_Nm_HWFET;
+    elseif i == 2
+        load SOC_grid_01_trq_1_NM_HWFET;
         c = 'SOC grid size = 0.01';
-    elseif i == 4
-        load SOC_grid_005_trq_1_Nm_HWFET;
+    elseif i == 3
+        load SOC_grid_005_trq_1_NM_HWFET;
         c = 'SOC grid size = 0.005';
+    elseif i == 4
+        load SOC_grid_001_trq_1_NM_HWFET;
+        c = 'SOC grid size = 0.001';
     elseif i == 5
         load SOC_grid_001_trq_1_Nm_HWFET;
         c = 'SOC grid size = 0.001';
@@ -61,7 +61,7 @@ for i = [start,2,3,4,5];
         a = a+1;
     end
     
-    figure(2)
+    figure(1)
     plot(result.a1(1,:),result.mpg(1,:),'-ko',...
         'LineWidth',0.5,...
         'MarkerEdgeColor','k',...
@@ -74,7 +74,7 @@ for i = [start,2,3,4,5];
     set(findall(gcf,'type','text'),'FontSize',15,'fontWeight','bold')
     hold on
     
-    figure(3)
+    figure(2)
     plot(result.a2(2,:),result.mpg(2,:),'-ko',...
         'LineWidth',0.5,...
         'MarkerEdgeColor','k',...
@@ -87,7 +87,7 @@ for i = [start,2,3,4,5];
     set(findall(gcf,'type','text'),'FontSize',15,'fontWeight','bold')
     hold on
     
-    figure(4)
+    figure(3)
     plot(result.a3(3,:),result.mpg(3,:),'-ko',...
         'LineWidth',0.5,...
         'MarkerEdgeColor','k',...
@@ -100,7 +100,7 @@ for i = [start,2,3,4,5];
     set(findall(gcf,'type','text'),'FontSize',15,'fontWeight','bold')
     hold on
     
-    figure(5)
+    figure(4)
     plot(result.shift(4,:),result.mpg(4,:),'-ko',...
         'LineWidth',0.5,...
         'MarkerEdgeColor','k',...
