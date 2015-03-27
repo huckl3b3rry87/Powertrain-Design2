@@ -5,10 +5,10 @@ C = jet;
 h = 14;
 r=6;
 t = 10;
-q = 12;  % For colors
+q = 8;  % For colors
 start = 1;
 stop = 10;
-for i = [start, 2,3];
+for i = [start, 2,3,4,5,6];
     if i == 1
         load SOC_grid_005_trq_20_NM_HWFET;
         c = '20 Nm';
@@ -22,11 +22,11 @@ for i = [start, 2,3];
         load SOC_grid_005_trq_1_NM_HWFET;
         c = '1 Nm';
     elseif i == 5
-        load SOC_grid_005_trq_0_5_Nm_HWFET;
+        load SOC_grid_005_trq_0_5_NM_HWFET;
         c = '0.5 Nm';
     elseif i == 6
-        load SOC_grid_005_interp;
-        c = '0.005 lin. interp';
+        load SOC_grid_005_trq_0_1_NM_HWFET;
+        c = '0.1 Nm';
     elseif i == 7
         load SOC_grid_001_interp;
         c = '0.001 lin. interp.';
@@ -61,8 +61,13 @@ for i = [start, 2,3];
         a = a+1;
     end
     
+    if i ==4
+    s =    1000/10.2567;
+    else
+        s= 1;
+    end
     figure(2)
-    plot(result.NOx(1,:),result.mpg(1,:),'-ko',...
+    plot(result.NOx(1,:)*s,result.mpg(1,:),'-ko',...
         'LineWidth',0.5,...
         'MarkerEdgeColor','k',...
         'MarkerFaceColor',C(a+(a-1)*q,:),...
@@ -75,7 +80,7 @@ for i = [start, 2,3];
     hold on
     
     figure(3)
-    plot(result.CO(2,:),result.mpg(2,:),'-ko',...
+    plot(result.CO(2,:)*s,result.mpg(2,:),'-ko',...
         'LineWidth',0.5,...
         'MarkerEdgeColor','k',...
         'MarkerFaceColor',C(a+(a-1)*q,:),...
@@ -88,7 +93,7 @@ for i = [start, 2,3];
     hold on
     
     figure(4)
-    plot(result.HC(3,:),result.mpg(3,:),'-ko',...
+    plot(result.HC(3,:)*s,result.mpg(3,:),'-ko',...
         'LineWidth',0.5,...
         'MarkerEdgeColor','k',...
         'MarkerFaceColor',C(a+(a-1)*q,:),...

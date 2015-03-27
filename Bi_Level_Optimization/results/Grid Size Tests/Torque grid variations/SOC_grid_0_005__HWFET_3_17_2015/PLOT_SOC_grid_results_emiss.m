@@ -8,7 +8,7 @@ t = 10;
 q = 12;  % For colors
 start = 1;
 stop = 10;
-for i = [start, 2,3];
+for i = [start, 2,3,4,5,6];
     if i == 1
         load SOC_grid_005_trq_20_NM_HWFET;
         c = '20 Nm';
@@ -22,11 +22,11 @@ for i = [start, 2,3];
         load SOC_grid_005_trq_1_NM_HWFET;
         c = '1 Nm';
     elseif i == 5
-        load SOC_grid_005_trq_0_5_Nm_HWFET;
+        load SOC_grid_005_trq_0_5_NM_HWFET;
         c = '0.5 Nm';
     elseif i == 6
-        load SOC_grid_005_interp;
-        c = '0.005 lin. interp';
+        load SOC_grid_005_trq_0_1_NM_HWFET;
+        c = '0.1 Nm';
     elseif i == 7
         load SOC_grid_001_interp;
         c = '0.001 lin. interp.';
